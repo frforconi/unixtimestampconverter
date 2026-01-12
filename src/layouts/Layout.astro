@@ -1,0 +1,78 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = "Real-time Unix Timestamp Converter and World Clock" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div class="background-gradient"></div>
+		<main>
+			<slot />
+		</main>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--accent: 124, 77, 255;
+		--accent-light: 224, 204, 250;
+		--accent-dark: 49, 10, 101;
+		--background: 13, 17, 23;
+		--text-color: #e6edf3;
+	}
+	html {
+		font-family: 'Inter', system-ui, sans-serif;
+		background: rgb(var(--background));
+		color: var(--text-color);
+		scroll-behavior: smooth;
+	}
+	body {
+		margin: 0;
+		min-height: 100vh;
+		position: relative;
+		overflow-x: hidden;
+	}
+	
+	/* Beautiful animated background */
+	.background-gradient {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		background: radial-gradient(circle at 50% 10%, rgba(var(--accent), 0.15) 0%, transparent 40%),
+					radial-gradient(circle at 0% 100%, rgba(var(--accent-dark), 0.4) 0%, transparent 50%),
+					radial-gradient(circle at 100% 100%, rgba(var(--accent), 0.1) 0%, transparent 50%);
+		opacity: 0.8;
+	}
+
+	code {
+		font-family: 'JetBrains Mono', monospace;
+	}
+	
+	main {
+		margin: 0 auto;
+		padding: 2rem;
+		width: 100%;
+		color: white;
+		line-height: 1.6;
+		max-width: 1200px;
+	}
+</style>

@@ -1,16 +1,82 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import LiveMilliseconds from '../components/LiveMilliseconds.vue';
+import DateConverter from '../components/DateConverter.vue';
+import WorldClock from '../components/WorldClock.vue';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Unix Timestamp Converter | Real-time Tools">
+	<header class="hero">
+		<h1>Unix <span class="text-gradient">Time</span> Converter</h1>
+		<p class="subtitle">Real-time tools for developers and time travelers.</p>
+	</header>
+
+	<div class="islands-container">
+		<!-- Central Hero Island -->
+		<section class="island-main">
+			<LiveMilliseconds client:load />
+		</section>
+
+		<!-- Secondary Utility Islands -->
+		<section class="island-secondary">
+			<DateConverter client:visible />
+			<WorldClock client:visible />
+		</section>
+	</div>
+</Layout>
+
+<style>
+	.hero {
+		text-align: center;
+		margin-bottom: 4rem;
+		margin-top: 2rem;
+	}
+
+	h1 {
+		font-size: 3.5rem;
+		font-weight: 800;
+		margin: 0;
+		letter-spacing: -0.05rem;
+		line-height: 1.1;
+	}
+	
+	.text-gradient {
+		background-image: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+
+	.subtitle {
+		font-size: 1.2rem;
+		color: #8b949e;
+		margin-top: 1rem;
+	}
+	
+	.islands-container {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		align-items: center;
+	}
+
+	.island-main {
+		width: 100%;
+		max-width: 800px;
+	}
+
+	.island-secondary {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 2rem;
+		width: 100%;
+		max-width: 1000px;
+	}
+
+	@media (min-width: 768px) {
+		.island-secondary {
+			grid-template-columns: 1fr 2fr; /* Date converter smaller, world clock wider */
+		}
+	}
+</style>
