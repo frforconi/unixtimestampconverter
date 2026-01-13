@@ -1,34 +1,29 @@
 <template>
   <div class="island-card">
-    <h2>Unix Time (ms)</h2>
-    <div class="time-display">{{ milliseconds }}</div>
-    <div class="label">Milliseconds since epoch</div>
+    <h2>Unix Time (Seconds)</h2>
+    <div class="time-display">{{ seconds }}</div>
+    <div class="label">Seconds since epoch</div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
-const milliseconds = ref(Date.now());
+const seconds = ref(Math.floor(Date.now() / 1000));
 let intervalId;
 
 const updateTime = () => {
-  milliseconds.value = Date.now();
+  seconds.value = Math.floor(Date.now() / 1000);
 };
 
 onMounted(() => {
-  // Update every frame for smooth visuals, or at least every millisecond ideally (limited by JS loop)
-  // requestAnimationFrame is better for visuals, but setInterval is okay for simple updates
-  // Let's use requestAnimationFrame for "real-time" feel
-  const loop = () => {
-    updateTime();
-    intervalId = requestAnimationFrame(loop);
-  };
-  loop();
+  // Update every second is enough for seconds resolution
+  intervalId = setInterval(updateTime, 1000);
+  updateTime();
 });
 
 onUnmounted(() => {
-  if (intervalId) cancelAnimationFrame(intervalId);
+  if (intervalId) clearInterval(intervalId);
 });
 </script>
 

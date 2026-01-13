@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import LiveMilliseconds from '../components/LiveMilliseconds.vue';
+import LiveTimestamp from '../components/LiveTimestamp.vue';
 import DateConverter from '../components/DateConverter.vue';
 import WorldClock from '../components/WorldClock.vue';
 ---
@@ -14,7 +14,7 @@ import WorldClock from '../components/WorldClock.vue';
 	<div class="islands-container">
 		<!-- Central Hero Island -->
 		<section class="island-main">
-			<LiveMilliseconds client:load />
+			<LiveTimestamp client:load />
 		</section>
 
 		<!-- Secondary Utility Islands -->

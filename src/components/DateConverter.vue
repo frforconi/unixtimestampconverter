@@ -1,6 +1,6 @@
 <template>
   <div class="island-card">
-    <h2>Date <-> Milliseconds</h2>
+    <h2>Date <-> Seconds</h2>
     
     <div class="input-group">
       <label>Date Selection</label>
@@ -15,7 +15,7 @@
     <div class="arrow">⇅</div>
 
     <div class="input-group">
-      <label>Milliseconds</label>
+      <label>Seconds</label>
       <input 
         type="number" 
         v-model="timestamp"
@@ -42,7 +42,7 @@ const toDatetimeLocal = (date) => {
 
 const onDateChange = () => {
   if (selectedDate.value) {
-    timestamp.value = new Date(selectedDate.value).getTime();
+    timestamp.value = Math.floor(new Date(selectedDate.value).getTime() / 1000);
   } else {
     timestamp.value = 0;
   }
@@ -51,13 +51,13 @@ const onDateChange = () => {
 const onTimestampChange = () => {
   const ts = Number(timestamp.value);
   if (!isNaN(ts)) {
-    selectedDate.value = toDatetimeLocal(new Date(ts));
+    selectedDate.value = toDatetimeLocal(new Date(ts * 1000));
   }
 };
 
 onMounted(() => {
   const now = new Date();
-  timestamp.value = now.getTime();
+  timestamp.value = Math.floor(now.getTime() / 1000);
   selectedDate.value = toDatetimeLocal(now);
 });
 </script>
