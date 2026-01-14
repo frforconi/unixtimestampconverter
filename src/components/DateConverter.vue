@@ -1,26 +1,14 @@
 <template>
   <div class="island-card">
     <div class="header-row">
-      <h2>Date <-> Seconds</h2>
+      <h2>DateConverter</h2>
+      <p class="info-text">Date <-> Seconds</p>
       <div class="toggle-group">
-        <div class="mode-selector">
-          <select 
-            v-if="!isUtc"
-            v-model="selectedTimezone" 
-            @change="updateInputs"
-            class="timezone-select"
-          >
-            <option v-for="tz in timezoneList" :key="tz" :value="tz">
-              {{ tz.includes('/') ? tz.split('/')[1].replace(/_/g, ' ') : tz }}
-            </option>
-          </select>
-          <button 
-            v-else
-            @click="setMode(false)"
-            class="toggle-btn"
-          >Local</button>
-        </div>
-        
+        <button 
+          :class="{ active: !isUtc }" 
+          @click="setMode(false)"
+          class="toggle-btn"
+        >Local</button>
         <button 
           :class="{ active: isUtc }" 
           @click="setMode(true)"
@@ -63,9 +51,10 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 
+// -- State --
 const isUtc = ref(false);
 const selectedTimezone = ref('UTC');
-const timezoneList = ref([]);
+const STORAGE_KEY_UTC = 'unix-converter:date-converter-utc';
 
 const year = ref(1970);
 const month = ref(1);
@@ -76,18 +65,13 @@ const second = ref(0);
 
 const timestamp = ref(0);
 
-// Initialize timezone list
-const initTimezones = () => {
-  if (typeof Intl !== 'undefined' && Intl.supportedValuesOf) {
-    timezoneList.value = Intl.supportedValuesOf('timeZone');
-  } else {
-    // Fallback for older environments
-    timezoneList.value = ['UTC', 'Europe/London', 'Europe/Paris', 'Europe/Rome', 'America/New_York', 'Asia/Tokyo'];
-  }
-};
-
 onMounted(() => {
-  initTimezones();
+  // Load saved mode
+  const savedUtc = localStorage.getItem(STORAGE_KEY_UTC);
+  if (savedUtc !== null) {
+    isUtc.value = JSON.parse(savedUtc);
+  }
+
   try {
     // Default to system timezone
     selectedTimezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -107,11 +91,7 @@ onMounted(() => {
 
 const setMode = (utc) => {
   isUtc.value = utc;
-  if (utc) {
-    // When switching to UTC mode, we just use UTC logic
-  } else {
-    // When switching to Local, we ensure selectedTimezone is set (it should obey the selector)
-  }
+  localStorage.setItem(STORAGE_KEY_UTC, JSON.stringify(utc));
   updateInputs(); 
 };
 
@@ -291,29 +271,6 @@ h2 {
   color: #ccc;
 }
 
-.mode-selector {
-  display: flex;
-  align-items: center;
-}
-
-.timezone-select {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-family: inherit;
-  cursor: pointer;
-  outline: none;
-  max-width: 150px;
-}
-
-.timezone-select option {
-  background: #2a2a2a;
-  color: #fff;
-}
-
 .input-group {
   display: flex;
   flex-direction: column;
@@ -401,5 +358,13 @@ h2 {
   color: #666;
   font-size: 1.2rem;
   margin: -0.5rem 0;
+}
+
+.info-text {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #666;
+  font-style: italic;
 }
 </style>
