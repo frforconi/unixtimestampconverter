@@ -2,7 +2,7 @@
   <div class="island-card">
     <div class="header-row">
       <h2>DateConverter</h2>
-      <p class="info-text">Date <-> Seconds</p>
+      <!-- <p class="info-text">Date <-> Seconds</p> -->
       <div class="toggle-group">
         <button 
           :class="{ active: !isUtc }" 

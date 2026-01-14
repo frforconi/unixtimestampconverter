@@ -1,9 +1,9 @@
 <template>
   <div class="island-card">
     <div class="header-row">
-      <h2>World Clock <span v-if="editing" class="edit-badge">EDITING</span></h2>
-      <div v-if="!isRealtime" class="info-text">
-        Showing times for DateConverter timestamp
+      <div class="title-group">
+        <h2>World Clock <span v-if="editing" class="edit-badge">EDITING</span></h2>
+        <!-- <span v-if="!isRealtime" class="info-text-inline">Fixed to DateConverter</span> -->
       </div>
       <div class="controls-group">
         <div class="toggle-group">
@@ -16,7 +16,7 @@
             :class="{ active: !isRealtime }" 
             @click="setMode(false)"
             class="toggle-btn"
-          >Fixed</button>
+          >Date Converter</button>
         </div>
         <button 
           class="icon-btn" 
@@ -292,6 +292,25 @@ onUnmounted(() => {
   margin-bottom: 1rem;
 }
 
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 0;
+}
+
+.info-text-inline {
+    font-size: 0.7rem;
+    color: #7c4dff;
+    background: rgba(124, 77, 255, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(124, 77, 255, 0.2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .controls-group {
     display: flex;
     gap: 1rem;
@@ -485,13 +504,5 @@ h2 {
     background: #333;
     color: #666;
     cursor: not-allowed;
-}
-
-.info-text {
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #666;
-  font-style: italic;
 }
 </style>
