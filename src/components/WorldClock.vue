@@ -124,6 +124,8 @@ const formatZone = (zoneName, now) => {
 
 // -- Local Zone Logic --
 const localZone = computed(() => {
+    // depend on trigger
+    const _ = trigger.value;
     const now = isRealtime.value 
         ? new Date() 
         : new Date(referenceTimestamp.value * 1000);
