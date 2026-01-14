@@ -65,8 +65,10 @@ const minute = ref(0);
 const second = ref(0);
 
 const timestamp = ref(0);
+const isMounted = ref(false);
 
 onMounted(() => {
+  isMounted.value = true;
   // Load saved mode
   const savedUtc = localStorage.getItem(STORAGE_KEY_UTC);
   if (savedUtc !== null) {

@@ -1,7 +1,7 @@
 <template>
   <div class="island-card">
     <h2>Unix Time (Seconds)</h2>
-    <div class="time-display">{{ seconds }}</div>
+    <div class="time-display">{{ isMounted ? seconds : '---' }}</div>
     <div class="label">Seconds since epoch</div>
   </div>
 </template>
@@ -9,7 +9,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
-const seconds = ref(Math.floor(Date.now() / 1000));
+const seconds = ref(0);
+const isMounted = ref(false);
 let intervalId;
 
 const updateTime = () => {
@@ -17,9 +18,10 @@ const updateTime = () => {
 };
 
 onMounted(() => {
+  isMounted.value = true;
+  updateTime();
   // Update every second is enough for seconds resolution
   intervalId = setInterval(updateTime, 1000);
-  updateTime();
 });
 
 onUnmounted(() => {

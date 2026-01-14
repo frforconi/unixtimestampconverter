@@ -30,37 +30,39 @@
     </div>
     
     <div class="zones-grid">
-      <!-- Pinned Local Zone -->
-      <div class="zone-item local-zone">
-        <div class="zone-header">
-            <div class="zone-name">{{ localZone.label }} (Local)</div>
+      <template v-if="isMounted">
+        <!-- Pinned Local Zone -->
+        <div class="zone-item local-zone">
+          <div class="zone-header">
+              <div class="zone-name">{{ localZone.label }} (Local)</div>
+          </div>
+          <div class="zone-time">{{ localZone.time }}</div>
+          <div class="zone-day">{{ localZone.day }}</div>
         </div>
-        <div class="zone-time">{{ localZone.time }}</div>
-        <div class="zone-day">{{ localZone.day }}</div>
-      </div>
 
-      <!-- Configurable Zones -->
-      <div v-for="(zone, index) in displayZonesComputed" :key="zone.id" class="zone-item" :class="{ 'editing': editing }">
-        <div class="zone-header">
-            <div class="zone-name">{{ zone.label }}</div>
-            <div v-if="editing" class="zone-actions">
-                <button @click="moveZone(index, -1)" :disabled="index === 0">←</button>
-                <button @click="removeZone(index)" class="delete-btn">×</button>
-                <button @click="moveZone(index, 1)" :disabled="index === displayZones.length - 1">→</button>
-            </div>
+        <!-- Configurable Zones -->
+        <div v-for="(zone, index) in displayZonesComputed" :key="zone.id" class="zone-item" :class="{ 'editing': editing }">
+          <div class="zone-header">
+              <div class="zone-name">{{ zone.label }}</div>
+              <div v-if="editing" class="zone-actions">
+                  <button @click="moveZone(index, -1)" :disabled="index === 0">←</button>
+                  <button @click="removeZone(index)" class="delete-btn">×</button>
+                  <button @click="moveZone(index, 1)" :disabled="index === displayZones.length - 1">→</button>
+              </div>
+          </div>
+          <div class="zone-time">{{ zone.time }}</div>
+          <div class="zone-day">{{ zone.day }}</div>
         </div>
-        <div class="zone-time">{{ zone.time }}</div>
-        <div class="zone-day">{{ zone.day }}</div>
-      </div>
-      
-      <!-- Add Zone Card (only in edit mode) -->
-      <div v-if="editing" class="zone-item add-zone">
-        <select v-model="newZoneName" class="zone-select">
-            <option value="" disabled selected>Select Timezone</option>
-            <option v-for="tz in availableTimezones" :key="tz" :value="tz">{{ tz }}</option>
-        </select>
-        <button @click="addZone" :disabled="!newZoneName" class="add-btn">Add Clock</button>
-      </div>
+        
+        <!-- Add Zone Card (only in edit mode) -->
+        <div v-if="editing" class="zone-item add-zone">
+          <select v-model="newZoneName" class="zone-select">
+              <option value="" disabled selected>Select Timezone</option>
+              <option v-for="tz in availableTimezones" :key="tz" :value="tz">{{ tz }}</option>
+          </select>
+          <button @click="addZone" :disabled="!newZoneName" class="add-btn">Add Clock</button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -74,6 +76,7 @@ const referenceTimestamp = ref(0);
 const editing = ref(false);
 const newZoneName = ref('');
 const rawZones = ref([]); // Stores { id, name, label }
+const isMounted = ref(false);
 
 // -- Constants --
 const STORAGE_KEY = 'unix-converter:world-clock-zones';
@@ -215,9 +218,9 @@ const loadZones = () => {
     } else {
         // Defaults - No Local here, as it's pinned now
         rawZones.value = [
-            { id: generateId(), name: 'UTC', label: 'UTC' },
-            { id: generateId(), name: 'America/New_York', label: 'New York' },
-            { id: generateId(), name: 'Asia/Tokyo', label: 'Tokyo' },
+            { id: 'default-utc', name: 'UTC', label: 'UTC' },
+            { id: 'default-ny', name: 'America/New_York', label: 'New York' },
+            { id: 'default-tokyo', name: 'Asia/Tokyo', label: 'Tokyo' },
         ];
     }
 };
@@ -248,6 +251,8 @@ const onTimestampUpdate = (event) => {
 };
 
 onMounted(() => {
+    isMounted.value = true;
+    
     // Load saved mode
     const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
     if (savedMode !== null) {
