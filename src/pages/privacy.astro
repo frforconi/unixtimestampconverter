@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Norme sulla Privacy | Unix Timestamp Converter">
+	<div class="privacy-container">
+		<h1>Norme sulla Privacy</h1>
+		<p class="last-updated">Ultimo aggiornamento: 15 Gennaio 2026</p>
+
+		<section>
+			<h2>1. Introduzione</h2>
+			<p>
+				La presente informativa descrive come il sito "Unix Timestamp Converter" gestisce i dati degli utenti. La tua privacy è importante per noi e ci impegniamo a essere trasparenti su come funzionano i nostri strumenti.
+			</p>
+		</section>
+
+		<section>
+			<h2>2. Dati Raccolti Direttamente</h2>
+			<p>
+				Questo sito <strong>non raccoglie dati personali identificativi</strong> direttamente tramite moduli o registrazioni. Non ti chiediamo nome, email o indirizzo.
+			</p>
+			<p>
+				Utilizziamo il <strong>LocalStorage</strong> del tuo browser esclusivamente per scopi funzionali, ovvero per memorizzare le tue preferenze locali (come il fuso orario selezionato o la modalità "Realtime"), in modo che rimangano salvate alla tua prossima visita. Questi dati non vengono inviati ai nostri server.
+			</p>
+		</section>
+
+		<section>
+			<h2>3. Servizi di Terze Parti</h2>
+			<p>
+				Per sostenere il mantenimento di questo strumento gratuito e analizzare il traffico, utilizziamo i seguenti servizi di terze parti:
+			</p>
+			
+			<h3>Google AdSense</h3>
+			<p>
+				Utilizziamo Google AdSense per pubblicare annunci pubblicitari. Google utilizza i cookie per pubblicare annunci basati sulle tue visite precedenti a questo o altri siti web. L'uso dei cookie per la pubblicità consente a Google e ai suoi partner di pubblicare annunci per te in base alla tua navigazione. Puoi disattivare la pubblicità personalizzata visitando le <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Impostazioni annunci di Google</a>.
+			</p>
+
+			<h3>Google Analytics</h3>
+			<p>
+				Utilizziamo Google Analytics per capire come i visitatori interagiscono con il sito (pagine più visitate, durata della sessione, etc.). Queste informazioni vengono raccolte in forma aggregata e anonima. Google Analytics utilizza i cookie per generare dati statistici.
+			</p>
+		</section>
+
+		<section>
+			<h2>4. Gestione del Consenso (Cookie)</h2>
+			<p>
+				Al tuo primo accesso, ti viene presentato un banner per il consenso ai cookie. Puoi scegliere di accettare o rifiutare l'uso dei cookie per scopi pubblicitari e analitici. La tua scelta verrà memorizzata localmente nel tuo browser.
+			</p>
+		</section>
+
+		<section>
+			<h2>5. Diritti dell'Utente</h2>
+			<p>
+				Poiché non conserviamo dati personali sui nostri server, non abbiamo database da consultare per richieste di accesso o cancellazione. Tuttavia, puoi in qualsiasi momento pulire la cache e i dati del sito (localStorage e cookie) direttamente dalle impostazioni del tuo browser per rimuovere ogni traccia locale della tua navigazione.
+			</p>
+		</section>
+
+		<div class="back-link">
+			<a href="/">&larr; Torna alla Home</a>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.privacy-container {
+		max-width: 800px;
+		margin: 0 auto;
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(10px);
+		padding: 3rem;
+		border-radius: 20px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		line-height: 1.7;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 0.5rem;
+		background: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.last-updated {
+		color: #8b949e;
+		font-size: 0.9rem;
+		margin-bottom: 3rem;
+	}
+
+	h2 {
+		color: #fff;
+		margin-top: 2rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		padding-bottom: 0.5rem;
+	}
+
+	h3 {
+		color: #c0c0c0;
+		margin-top: 1.5rem;
+	}
+
+	p {
+		color: #e6edf3;
+		margin-bottom: 1rem;
+	}
+
+	a {
+		color: rgb(var(--accent-light));
+		text-decoration: none;
+	}
+
+	a:hover {
+		text-decoration: underline;
+	}
+
+	.back-link {
+		margin-top: 3rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		padding-top: 1.5rem;
+	}
+</style>
