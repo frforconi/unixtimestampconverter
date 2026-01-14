@@ -2,6 +2,9 @@
   <div class="island-card">
     <div class="header-row">
       <h2>World Clock <span v-if="editing" class="edit-badge">EDITING</span></h2>
+      <div v-if="!isRealtime" class="info-text">
+        Showing times for DateConverter timestamp
+      </div>
       <div class="controls-group">
         <div class="toggle-group">
           <button 
@@ -59,10 +62,6 @@
         <button @click="addZone" :disabled="!newZoneName" class="add-btn">Add Clock</button>
       </div>
     </div>
-    
-    <div v-if="!isRealtime" class="info-text">
-      Showing times for DateConverter timestamp
-    </div>
   </div>
 </template>
 
@@ -78,6 +77,7 @@ const rawZones = ref([]); // Stores { id, name, label }
 
 // -- Constants --
 const STORAGE_KEY = 'unix-converter:world-clock-zones';
+const MODE_STORAGE_KEY = 'unix-converter:world-clock-realtime';
 
 // -- Helpers --
 const getLocalTimezone = () => {
@@ -156,6 +156,7 @@ const displayZones = () => rawZones.value.map(z => {
 // -- Actions --
 const setMode = (realtime) => {
   isRealtime.value = realtime;
+  localStorage.setItem(MODE_STORAGE_KEY, JSON.stringify(realtime));
 };
 
 const toggleEdit = () => {
@@ -245,6 +246,12 @@ const onTimestampUpdate = (event) => {
 };
 
 onMounted(() => {
+    // Load saved mode
+    const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
+    if (savedMode !== null) {
+        isRealtime.value = JSON.parse(savedMode);
+    }
+
     // Load Timezones list
     if (Intl && Intl.supportedValuesOf) {
         availableTimezones.value = Intl.supportedValuesOf('timeZone');
@@ -344,7 +351,24 @@ h2 {
 }
 .icon-btn:hover {
     opacity: 1;
-  opacity: 1;
+}
+
+.done-btn {
+    background: #FF9800 !important;
+    color: #000 !important;
+    font-size: 0.8rem !important;
+    font-weight: bold;
+    padding: 4px 12px !important;
+    border-radius: 6px !important;
+    opacity: 1 !important;
+    border: 1px solid rgba(0,0,0,0.2) !important;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.done-btn:hover {
+    background: #ffa726 !important;
+    transform: scale(1.05);
 }
 
 .zones-grid {
