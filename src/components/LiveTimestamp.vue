@@ -29,7 +29,7 @@ onUnmounted(() => {
 
 <style scoped>
 .island-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 2rem;

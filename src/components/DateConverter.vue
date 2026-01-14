@@ -18,11 +18,12 @@
     </div>
     
     <div class="input-group">
-      <label>Seconds</label>
+      <label for="ts-input">Seconds</label>
       <input 
         type="number" 
         v-model="timestamp"
         @input="updateInputs"
+        id="ts-input"
         class="ms-input"
       />
     </div>
