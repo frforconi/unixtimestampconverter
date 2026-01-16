@@ -1,14 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import LiveTimestamp from '../components/LiveTimestamp.vue';
-import DateConverter from '../components/DateConverter.vue';
-import WorldClock from '../components/WorldClock.vue';
+import Layout from "../layouts/Layout.astro";
+import LiveTimestamp from "../components/LiveTimestamp.vue";
+import DateConverter from "../components/DateConverter.vue";
+import WorldClock from "../components/WorldClock.vue";
 ---
 
 <Layout title="Unix Timestamp Converter | Real-time Tools">
 	<header class="hero">
+		<!-- <img src="/logo.png" alt="Unix Time Converter Logo" class="site-logo" /> -->
 		<h1>Unix <span class="text-gradient">Time</span> Converter</h1>
-		<p class="subtitle">Real-time tools for developers and time travelers.</p>
+		<p class="subtitle">
+			Real-time tools for developers and time travelers.
+		</p>
 	</header>
 
 	<div class="islands-container">
@@ -32,6 +35,19 @@ import WorldClock from '../components/WorldClock.vue';
 		margin-top: 2rem;
 	}
 
+	/* .site-logo {
+		width: 120px;
+		height: auto;
+		margin-bottom: 1.5rem;
+		border-radius: 20%;
+		box-shadow: 0 0 30px rgba(124, 77, 255, 0.3);
+		transition: transform 0.3s ease;
+	}
+
+	.site-logo:hover {
+		transform: scale(1.05) rotate(2deg);
+	} */
+
 	h1 {
 		font-size: 3.5rem;
 		font-weight: 800;
@@ -39,9 +55,13 @@ import WorldClock from '../components/WorldClock.vue';
 		letter-spacing: -0.05rem;
 		line-height: 1.1;
 	}
-	
+
 	.text-gradient {
-		background-image: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)));
+		background-image: linear-gradient(
+			45deg,
+			rgb(var(--accent)),
+			rgb(var(--accent-light))
+		);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-size: 400%;
@@ -53,30 +73,44 @@ import WorldClock from '../components/WorldClock.vue';
 		color: #8b949e;
 		margin-top: 1rem;
 	}
-	
+
 	.islands-container {
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
-		align-items: center;
+		align-items: stretch;
+		max-width: 80%;
+		margin: auto;
 	}
 
 	.island-main {
 		width: 100%;
-		max-width: 800px;
 	}
 
 	.island-secondary {
-		display: grid;
-		grid-template-columns: 1fr;
+		display: flex;
+		flex-direction: column;
 		gap: 2rem;
-		width: 100%;
-		max-width: 1000px;
 	}
 
 	@media (min-width: 768px) {
+		.islands-container {
+			display: flex;
+			flex-direction: column;
+			gap: 2rem;
+			align-items: stretch;
+			max-width: 900px;
+			margin: auto;
+		}
+		.island-main {
+			width: 100%;
+		}
 		.island-secondary {
-			grid-template-columns: 1fr 2fr; /* Date converter smaller, world clock wider */
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			gap: 2rem;
 		}
 	}
 </style>
