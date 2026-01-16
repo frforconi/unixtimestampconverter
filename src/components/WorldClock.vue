@@ -380,7 +380,7 @@ h2 {
 }
 
 .done-btn {
-    background: #FF9800 !important;
+    background: #3d7d1f !important;
     color: #000 !important;
     font-size: 0.8rem !important;
     font-weight: bold;
@@ -393,7 +393,7 @@ h2 {
 }
 
 .done-btn:hover {
-    background: #ffa726 !important;
+    background: #61c930 !important;
     transform: scale(1.05);
 }
 
