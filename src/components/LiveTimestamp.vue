@@ -12,6 +12,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 const seconds = ref(0);
 const isMounted = ref(false);
 let intervalId;
+let timeoutId;
 
 const updateTime = () => {
   seconds.value = Math.floor(Date.now() / 1000);
@@ -21,11 +22,17 @@ onMounted(() => {
   isMounted.value = true;
   updateTime();
   // Update every second is enough for seconds resolution
-  intervalId = setInterval(updateTime, 1000);
+  // Start Loop synchronized with the next full second
+    const msToNextSecond = 1000 - (Date.now() % 1000);
+    timeoutId = setTimeout(() => {
+      updateTime();
+      intervalId = setInterval(updateTime, 1000);
+    }, msToNextSecond);
 });
 
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId);
+  if (timeoutId) clearTimeout(timeoutId);
 });
 </script>
 

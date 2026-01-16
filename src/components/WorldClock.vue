@@ -227,6 +227,7 @@ const loadZones = () => {
 
 // -- Lifecycles --
 let intervalId;
+let timeoutId;
 
 // Optimized update using raf or interval
 const tick = () => {
@@ -271,14 +272,19 @@ onMounted(() => {
     // Sync reference
     referenceTimestamp.value = Math.floor(Date.now() / 1000);
     
-    // Start Loop
-    intervalId = setInterval(tick, 1000);
+    // Start Loop synchronized with the next full second
+    const msToNextSecond = 1000 - (Date.now() % 1000);
+    timeoutId = setTimeout(() => {
+        tick(); // First tick exactly on the second
+        intervalId = setInterval(tick, 1000);
+    }, msToNextSecond);
     
     window.addEventListener('unix-converter:timestamp-update', onTimestampUpdate);
 });
 
 onUnmounted(() => {
-    clearInterval(intervalId);
+    if(timeoutId) clearTimeout(timeoutId);
+    if(intervalId) clearInterval(intervalId);
     window.removeEventListener('unix-converter:timestamp-update', onTimestampUpdate);
 });
 </script>
