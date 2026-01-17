@@ -51,10 +51,6 @@ onUnmounted(() => {
   transition: transform 0.2s;
 }
 
-.island-card:hover {
-  transform: translateY(-5px);
-}
-
 h2 {
   font-size: 1.2rem;
   color: #a0a0a0;
