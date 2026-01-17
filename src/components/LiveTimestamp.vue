@@ -8,6 +8,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { realtimeTimestamp } from '../stores/timeStore';
 
 const seconds = ref(0);
 const isMounted = ref(false);
@@ -15,7 +16,9 @@ let intervalId;
 let timeoutId;
 
 const updateTime = () => {
-  seconds.value = Math.floor(Date.now() / 1000);
+  const now = Math.floor(Date.now() / 1000);
+  seconds.value = now;
+  realtimeTimestamp.set(now);
 };
 
 onMounted(() => {

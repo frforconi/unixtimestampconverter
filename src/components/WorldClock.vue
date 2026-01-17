@@ -69,10 +69,11 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { useStore } from '@nanostores/vue';
+import { realtimeTimestamp, referenceTimestamp } from '../stores/timeStore';
 
 // -- State --
 const isRealtime = ref(true);
-const referenceTimestamp = ref(0);
 const editing = ref(false);
 const newZoneName = ref('');
 const rawZones = ref([]); // Stores { id, name, label }
@@ -127,11 +128,9 @@ const formatZone = (zoneName, now) => {
 
 // -- Local Zone Logic --
 const localZone = computed(() => {
-    // depend on trigger
-    const _ = trigger.value;
     const now = isRealtime.value 
-        ? new Date() 
-        : new Date(referenceTimestamp.value * 1000);
+        ? new Date(realtimeStore.value * 1000) 
+        : new Date(referenceStore.value * 1000);
     
     const zoneName = getLocalTimezone();
     const label = zoneName.includes('/') ? zoneName.split('/')[1].replace(/_/g, ' ') : zoneName;
@@ -148,8 +147,8 @@ const localZone = computed(() => {
 // -- Core Logic --
 const displayZones = () => rawZones.value.map(z => {
   const now = isRealtime.value 
-    ? new Date() 
-    : new Date(referenceTimestamp.value * 1000);
+    ? new Date(realtimeStore.value * 1000) 
+    : new Date(referenceStore.value * 1000);
 
   const formatted = formatZone(z.name, now);
   return {
@@ -226,30 +225,18 @@ const loadZones = () => {
 };
 
 // -- Lifecycles --
-let intervalId;
-let timeoutId;
+const realtimeStore = useStore(realtimeTimestamp);
+const referenceStore = useStore(referenceTimestamp);
 
-// Optimized update using raf or interval
-const tick = () => {
-    if (isRealtime.value) {
-        trigger.value++;
-    }
-};
-const trigger = ref(0); // Tick signal
-
-// Override displayZones to depend on trigger
+// Override displayZones to depend on stores
 const displayZonesComputed = computed(() => {
-    // depend on trigger
-    const _ = trigger.value; 
+    if (isRealtime.value) {
+        const _ = realtimeStore.value; // reactive dependency
+    } else {
+        const _ = referenceStore.value; // reactive dependency
+    }
     return displayZones();
 });
-
-const onTimestampUpdate = (event) => {
-  referenceTimestamp.value = event.detail.timestamp;
-  if (!isRealtime.value) {
-    trigger.value++;
-  }
-};
 
 onMounted(() => {
     isMounted.value = true;
@@ -269,23 +256,10 @@ onMounted(() => {
 
     loadZones();
     
-    // Sync reference
-    referenceTimestamp.value = Math.floor(Date.now() / 1000);
-    
-    // Start Loop synchronized with the next full second
-    const msToNextSecond = 1000 - (Date.now() % 1000);
-    timeoutId = setTimeout(() => {
-        tick(); // First tick exactly on the second
-        intervalId = setInterval(tick, 1000);
-    }, msToNextSecond);
-    
-    window.addEventListener('unix-converter:timestamp-update', onTimestampUpdate);
+    // Sync reference is handled by store now
 });
 
 onUnmounted(() => {
-    if(timeoutId) clearTimeout(timeoutId);
-    if(intervalId) clearInterval(intervalId);
-    window.removeEventListener('unix-converter:timestamp-update', onTimestampUpdate);
 });
 </script>
 

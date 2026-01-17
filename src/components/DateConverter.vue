@@ -51,6 +51,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
+import { referenceTimestamp } from '../stores/timeStore';
 
 // -- State --
 const isUtc = ref(false);
@@ -86,10 +87,8 @@ onMounted(() => {
   timestamp.value = Math.floor(now.getTime() / 1000);
   updateInputs();
   
-  // Dispatch initial
-  window.dispatchEvent(new CustomEvent('unix-converter:timestamp-update', { 
-    detail: { timestamp: timestamp.value } 
-  }));
+  // Update initial store value
+  referenceTimestamp.set(timestamp.value);
 });
 
 const setMode = (utc) => {
@@ -186,9 +185,7 @@ const updateTimestamp = () => {
   }
   
   timestamp.value = Math.floor(ts / 1000);
-  window.dispatchEvent(new CustomEvent('unix-converter:timestamp-update', { 
-    detail: { timestamp: timestamp.value } 
-  }));
+  referenceTimestamp.set(timestamp.value);
 };
 
 const updateInputs = () => {
@@ -213,10 +210,8 @@ const updateInputs = () => {
       second.value = parts.second;
     }
 
-    // Also dispatch event when updated via inputs
-    window.dispatchEvent(new CustomEvent('unix-converter:timestamp-update', { 
-      detail: { timestamp: timestamp.value } 
-    }));
+    // Also update store when updated via inputs
+    referenceTimestamp.set(timestamp.value);
   }
 };
 </script>
