@@ -1,8 +1,10 @@
 <template>
   <div class="island-card">
     <div class="header-row">
-      <h2>DateConverter</h2>
-      <!-- <p class="info-text">Date <-> Seconds</p> -->
+      <div class="title-with-badge">
+        <h2>Date Converter</h2>
+        <span class="timezone-badge">{{ isUtc ? 'UTC' : selectedTimezone }}</span>
+      </div>
       <div class="toggle-group">
         <button 
           :class="{ active: !isUtc }" 
@@ -17,33 +19,75 @@
       </div>
     </div>
     
-    <div class="input-group">
-      <label for="ts-input">Seconds</label>
-      <input 
-        type="number" 
-        v-model="timestamp"
-        @input="updateInputs"
-        id="ts-input"
-        class="ms-input"
-      />
-    </div>
+    <div class="input-section">
+      <div class="input-group">
+        <div class="label-row">
+          <label for="ts-input">Unix Timestamp (Seconds)</label>
+          <div class="action-buttons">
+            <button @click="copyToClipboard(timestamp)" class="mini-copy-btn">Copy</button>
+            <button @click="shareLink" class="mini-copy-btn share-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              Share Link
+            </button>
+          </div>
+        </div>
+        <div class="input-wrapper">
+          <input 
+            type="number" 
+            v-model="timestamp"
+            @input="updateInputs"
+            id="ts-input"
+            class="main-input mono"
+          />
+        </div>
+      </div>
 
-    <div class="arrow">⇅</div>
+      <div class="arrow-divider">
+        <div class="line"></div>
+        <div class="icon">⇅</div>
+        <div class="line"></div>
+      </div>
 
-    <div class="input-group">
-      <label>Date Selection <span class="format-hint">YYYY-MM-DD HH:mm:ss</span></label>
-      <div class="date-inputs">
-        <input type="number" v-model="year" @input="updateTimestamp" placeholder="YYYY" class="date-part year" />
-        <span class="sep">-</span>
-        <input type="number" v-model="month" @input="updateTimestamp" placeholder="MM" class="date-part" min="1" max="12" />
-        <span class="sep">-</span>
-        <input type="number" v-model="day" @input="updateTimestamp" placeholder="DD" class="date-part" min="1" max="31" />
-        <span class="sep spacer"></span>
-        <input type="number" v-model="hour" @input="updateTimestamp" placeholder="HH" class="date-part" min="0" max="23" />
-        <span class="sep">:</span>
-        <input type="number" v-model="minute" @input="updateTimestamp" placeholder="mm" class="date-part" min="0" max="59" />
-        <span class="sep">:</span>
-        <input type="number" v-model="second" @input="updateTimestamp" placeholder="ss" class="date-part" min="0" max="59" />
+      <div class="input-group">
+        <div class="label-row">
+          <label>Human Readable Date</label>
+          <button @click="copyToClipboard(dateString)" class="mini-copy-btn">Copy Date</button>
+        </div>
+        <div class="date-inputs-container">
+          <div class="date-row">
+            <div class="date-field">
+              <input type="number" v-model="year" @input="updateTimestamp" placeholder="YYYY" class="date-part year mono" />
+              <span class="field-label">Year</span>
+            </div>
+            <span class="sep">-</span>
+            <div class="date-field">
+              <input type="number" v-model="month" @input="updateTimestamp" placeholder="MM" class="date-part mono" min="1" max="12" />
+              <span class="field-label">Month</span>
+            </div>
+            <span class="sep">-</span>
+            <div class="date-field">
+              <input type="number" v-model="day" @input="updateTimestamp" placeholder="DD" class="date-part mono" min="1" max="31" />
+              <span class="field-label">Day</span>
+            </div>
+          </div>
+          
+          <div class="date-row time-row">
+            <div class="date-field">
+              <input type="number" v-model="hour" @input="updateTimestamp" placeholder="HH" class="date-part mono" min="0" max="23" />
+              <span class="field-label">Hour</span>
+            </div>
+            <span class="sep">:</span>
+            <div class="date-field">
+              <input type="number" v-model="minute" @input="updateTimestamp" placeholder="mm" class="date-part mono" min="0" max="59" />
+              <span class="field-label">Min</span>
+            </div>
+            <span class="sep">:</span>
+            <div class="date-field">
+              <input type="number" v-model="second" @input="updateTimestamp" placeholder="ss" class="date-part mono" min="0" max="59" />
+              <span class="field-label">Sec</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -68,26 +112,55 @@ const second = ref(0);
 const timestamp = ref(0);
 const isMounted = ref(false);
 
+const dateString = computed(() => {
+  const pad = (n) => n.toString().padStart(2, '0');
+  return `${year.value}-${pad(month.value)}-${pad(day.value)} ${pad(hour.value)}:${pad(minute.value)}:${pad(second.value)}`;
+});
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text.toString());
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+  }
+};
+
+const shareLink = async () => {
+  const url = new URL(window.location.href);
+  url.searchParams.set('t', timestamp.value);
+  try {
+    await navigator.clipboard.writeText(url.toString());
+    alert('Link with timestamp copied to clipboard!');
+  } catch (err) {
+    console.error('Failed to copy link: ', err);
+  }
+};
+
 onMounted(() => {
   isMounted.value = true;
-  // Load saved mode
   const savedUtc = localStorage.getItem(STORAGE_KEY_UTC);
   if (savedUtc !== null) {
     isUtc.value = JSON.parse(savedUtc);
   }
 
   try {
-    // Default to system timezone
     selectedTimezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
   } catch (e) {
     selectedTimezone.value = 'UTC';
   }
 
-  const now = new Date();
-  timestamp.value = Math.floor(now.getTime() / 1000);
-  updateInputs();
+  // Check for 't' query parameter
+  const params = new URLSearchParams(window.location.search);
+  const tParam = params.get('t');
   
-  // Update initial store value
+  if (tParam && !isNaN(Number(tParam))) {
+    timestamp.value = Number(tParam);
+  } else {
+    const now = new Date();
+    timestamp.value = Math.floor(now.getTime() / 1000);
+  }
+  
+  updateInputs();
   referenceTimestamp.set(timestamp.value);
 });
 
@@ -97,13 +170,8 @@ const setMode = (utc) => {
   updateInputs(); 
 };
 
-// --- Conversion Helpers ---
-
-// Get date parts from a timestamp in a specific timezone
 const getPartsFromTimestampInZone = (ts, zone) => {
   const date = new Date(ts * 1000);
-  
-  // Use Intl to format to parts
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: zone,
     year: 'numeric',
@@ -123,39 +191,24 @@ const getPartsFromTimestampInZone = (ts, zone) => {
     year: parseInt(partMap.year),
     month: parseInt(partMap.month),
     day: parseInt(partMap.day),
-    hour: parseInt(partMap.hour) % 24, // sometimes 24 is returned for midnight?
+    hour: parseInt(partMap.hour) % 24,
     minute: parseInt(partMap.minute),
     second: parseInt(partMap.second)
   };
 };
 
-// Get timestamp from parts in a specific timezone (Iterative approach)
 const getTimestampFromPartsInZone = (y, m, d, h, min, s, zone) => {
-  // 1. Initial guess: Treat as UTC to get a base timestamp
   let guessDate = new Date(Date.UTC(y, m - 1, d, h, min, s));
   let guessTs = guessDate.getTime();
 
-  // 2. Iteratively refine
-  // We want: Format(guessTs, zone) == TargetParts
-  // We check the offset difference and adjust
-  
   for (let i = 0; i < 3; i++) {
     const parts = getPartsFromTimestampInZone(guessTs / 1000, zone);
-    
-    // Construct a date object from the "Actual" parts interpreted as UTC
-    // This allows us to compare apples to apples (time value wise) with the Target interpreted as UTC
     const actualAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
     const targetAsUtc = Date.UTC(y, m - 1, d, h, min, s);
-    
     const diff = targetAsUtc - actualAsUtc;
-    
-    if (Math.abs(diff) < 1000) {
-      break; // Converged
-    }
-    
+    if (Math.abs(diff) < 1000) break;
     guessTs += diff;
   }
-  
   return guessTs;
 };
 
@@ -172,7 +225,6 @@ const updateTimestamp = () => {
     ));
     ts = date.getTime();
   } else {
-    // Custom timezone logic
     ts = getTimestampFromPartsInZone(
       year.value,
       month.value,
@@ -183,7 +235,6 @@ const updateTimestamp = () => {
       selectedTimezone.value
     );
   }
-  
   timestamp.value = Math.floor(ts / 1000);
   referenceTimestamp.set(timestamp.value);
 };
@@ -200,7 +251,6 @@ const updateInputs = () => {
       minute.value = date.getUTCMinutes();
       second.value = date.getUTCSeconds();
     } else {
-      // Use helper for custom timezone
       const parts = getPartsFromTimestampInZone(ts, selectedTimezone.value);
       year.value = parts.year;
       month.value = parts.month;
@@ -209,8 +259,6 @@ const updateInputs = () => {
       minute.value = parts.minute;
       second.value = parts.second;
     }
-
-    // Also update store when updated via inputs
     referenceTimestamp.set(timestamp.value);
   }
 };
@@ -218,14 +266,14 @@ const updateInputs = () => {
 
 <style scoped>
 .island-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .header-row {
@@ -234,135 +282,198 @@ const updateInputs = () => {
   align-items: center;
 }
 
+.title-with-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 h2 {
   font-size: 1.1rem;
-  color: #c0c0c0;
+  color: #fff;
   margin: 0;
+  font-weight: 600;
+}
+
+.timezone-badge {
+  font-size: 0.7rem;
+  color: #8b949e;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
 }
 
 .toggle-group {
   display: flex;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  padding: 2px;
+  border-radius: 8px;
+  padding: 3px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .toggle-btn {
   background: transparent;
   border: none;
-  color: #888;
-  padding: 4px 12px;
-  border-radius: 4px;
+  color: #8b949e;
+  padding: 6px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   transition: all 0.2s;
 }
 
 .toggle-btn.active {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--accent), 0.2);
   color: #fff;
-  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.toggle-btn:hover:not(.active) {
-  color: #ccc;
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label-row label {
+  font-size: 0.85rem;
+  color: #8b949e;
+}
+
+.action-buttons {
+  display: flex;
   gap: 0.5rem;
 }
 
-.input-group label {
-  font-size: 0.8rem;
-  color: #888;
-  margin-left: 0.2rem;
-}
-
-.format-hint {
-  font-size: 0.7em;
-  opacity: 0.7;
-  margin-left: 4px;
-}
-
-.date-inputs {
+.mini-copy-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8b949e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
+  gap: 0.4rem;
+}
+
+.mini-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.share-btn {
+  color: rgb(var(--accent-light));
+  border-color: rgba(var(--accent), 0.3);
+}
+
+.share-btn:hover {
+  background: rgba(var(--accent), 0.1);
+  border-color: rgba(var(--accent), 0.5);
+}
+
+.main-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  font-size: 1.25rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.main-input:focus {
+  border-color: rgba(var(--accent), 0.5);
+}
+
+.arrow-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #444;
+}
+
+.arrow-divider .line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.arrow-divider .icon {
+  font-size: 1.2rem;
+}
+
+.date-inputs-container {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 4px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.date-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
 }
 
 .date-part {
   background: transparent;
   border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   color: white;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 1rem;
+  font-size: 1.1rem;
   text-align: center;
-  width: 2.5em; /* Fits 2 digits comfortably */
-  padding: 0;
+  width: 100%;
+  padding: 4px 0;
   outline: none;
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-.date-part::-webkit-outer-spin-button,
-.date-part::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .date-part:focus {
-  border-bottom: 2px solid #7c4dff;
+  border-bottom-color: rgba(var(--accent), 0.5);
 }
 
-.date-part.year {
-  width: 3.5em; /* Fits 4 digits */
+.field-label {
+  font-size: 0.65rem;
+  color: #555;
+  text-transform: uppercase;
 }
 
 .sep {
-  color: #888;
-  font-weight: bold;
+  color: #444;
+  margin-bottom: 1.2rem;
 }
 
-.sep.spacer {
-  width: 10px;
-}
-
-.ms-input {
-  width: 100%;
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.3);
-  color: white;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 1rem;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.ms-input:focus {
-  border-color: #7c4dff;
-}
-
-.arrow {
-  text-align: center;
-  color: #666;
-  font-size: 1.2rem;
-  margin: -0.5rem 0;
-}
-
-.info-text {
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #666;
-  font-style: italic;
+.mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 </style>

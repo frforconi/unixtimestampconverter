@@ -2,79 +2,83 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Norme sulla Privacy | Unix Timestamp Converter">
+<Layout 
+	title="Privacy Policy | Unix Timestamp Converter"
+	description="Privacy policy for the Unix Timestamp Converter tool. We respect your privacy and are transparent about our data practices."
+>
 	<div class="privacy-container">
-		<h1>Norme sulla Privacy</h1>
-		<p class="last-updated">Ultimo aggiornamento: 15 Gennaio 2026</p>
+		<h1>Privacy Policy</h1>
+		<p class="last-updated">Last updated: January 28, 2026</p>
 
 		<section>
-			<h2>1. Introduzione</h2>
+			<h2>1. Introduction</h2>
 			<p>
-				La presente informativa descrive come il sito "Unix Timestamp Converter" gestisce i dati degli utenti. La tua privacy è importante per noi e ci impegniamo a essere trasparenti su come funzionano i nostri strumenti.
+				This policy describes how the "Unix Timestamp Converter" website handles user data. Your privacy is important to us, and we are committed to being transparent about how our tools work.
 			</p>
 		</section>
 
 		<section>
-			<h2>2. Dati Raccolti Direttamente</h2>
+			<h2>2. Data Collection</h2>
 			<p>
-				Questo sito <strong>non raccoglie dati personali identificativi</strong> direttamente tramite moduli o registrazioni. Non ti chiediamo nome, email o indirizzo.
+				This website <strong>does not collect personally identifiable information</strong> directly through forms or registrations. We do not ask for your name, email, or address.
 			</p>
 			<p>
-				Utilizziamo il <strong>LocalStorage</strong> del tuo browser esclusivamente per scopi funzionali, ovvero per memorizzare le tue preferenze locali (come il fuso orario selezionato o la modalità "Realtime"), in modo che rimangano salvate alla tua prossima visita. Questi dati non vengono inviati ai nostri server.
+				We use your browser's <strong>LocalStorage</strong> exclusively for functional purposes, specifically to store your local preferences (such as selected timezone, world clock settings, or "Live" mode), so they remain saved for your next visit. This data is stored locally on your device and is not sent to our servers.
 			</p>
 		</section>
 
 		<section>
-			<h2>3. Servizi di Terze Parti</h2>
+			<h2>3. Third-Party Services</h2>
 			<p>
-				Per sostenere il mantenimento di questo strumento gratuito e analizzare il traffico, utilizziamo i seguenti servizi di terze parti:
+				To support the maintenance of this free tool and analyze traffic, we use the following third-party services:
 			</p>
 			
 			<h3>Google AdSense</h3>
 			<p>
-				Utilizziamo Google AdSense per pubblicare annunci pubblicitari. Google utilizza i cookie per pubblicare annunci basati sulle tue visite precedenti a questo o altri siti web. L'uso dei cookie per la pubblicità consente a Google e ai suoi partner di pubblicare annunci per te in base alla tua navigazione. Puoi disattivare la pubblicità personalizzata visitando le <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Impostazioni annunci di Google</a>.
+				We use Google AdSense to serve advertisements. Google uses cookies to serve ads based on your previous visits to this or other websites. The use of advertising cookies enables Google and its partners to serve ads to you based on your navigation. You can opt-out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ad Settings</a>.
 			</p>
 
 			<h3>Google Analytics</h3>
 			<p>
-				Utilizziamo Google Analytics per capire come i visitatori interagiscono con il sito (pagine più visitate, durata della sessione, etc.). Queste informazioni vengono raccolte in forma aggregata e anonima. Google Analytics utilizza i cookie per generare dati statistici.
+				We use Google Analytics to understand how visitors interact with the site (e.g., most visited pages, session duration). This information is collected in an aggregate and anonymous form. Google Analytics uses cookies to generate statistical data.
 			</p>
 		</section>
 
 		<section>
-			<h2>4. Gestione del Consenso (Cookie)</h2>
+			<h2>4. Consent Management</h2>
 			<p>
-				Al tuo primo accesso, ti viene presentato un banner per il consenso ai cookie. Puoi scegliere di accettare o rifiutare l'uso dei cookie per scopi pubblicitari e analitici. La tua scelta verrà memorizzata localmente nel tuo browser.
+				Upon your first visit, you may be presented with a banner for cookie consent. You can choose to accept or reject the use of cookies for advertising and analytical purposes. Your choice will be stored locally in your browser.
 			</p>
 		</section>
 
 		<section>
-			<h2>5. Diritti dell'Utente</h2>
+			<h2>5. User Rights</h2>
 			<p>
-				Poiché non conserviamo dati personali sui nostri server, non abbiamo database da consultare per richieste di accesso o cancellazione. Tuttavia, puoi in qualsiasi momento pulire la cache e i dati del sito (localStorage e cookie) direttamente dalle impostazioni del tuo browser per rimuovere ogni traccia locale della tua navigazione.
+				Since we do not store personal data on our servers, we do not have a database to consult for access or deletion requests. However, you can at any time clear your browser's cache and site data (localStorage and cookies) directly from your browser settings to remove all local traces of your navigation.
 			</p>
 		</section>
 
 		<div class="back-link">
-			<a href="/">&larr; Torna alla Home</a>
+			<a href="/">&larr; Back to Home</a>
 		</div>
 	</div>
 </Layout>
 
 <style>
 	.privacy-container {
-		max-width: 800px;
-		margin: 0 auto;
-		background: rgba(255, 255, 255, 0.05);
-		backdrop-filter: blur(10px);
-		padding: 3rem;
-		border-radius: 20px;
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		line-height: 1.7;
+		max-width: 850px;
+		margin: 2rem auto;
+		background: var(--card-bg);
+		backdrop-filter: blur(20px);
+		padding: 4rem;
+		border-radius: 24px;
+		border: 1px solid var(--card-border);
+		line-height: 1.8;
 	}
 
 	h1 {
-		font-size: 2.5rem;
+		font-size: 3rem;
+		font-weight: 800;
 		margin-bottom: 0.5rem;
 		background: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)));
 		-webkit-background-clip: text;
@@ -83,39 +87,64 @@ import Layout from '../layouts/Layout.astro';
 
 	.last-updated {
 		color: #8b949e;
-		font-size: 0.9rem;
-		margin-bottom: 3rem;
+		font-size: 0.95rem;
+		margin-bottom: 4rem;
 	}
 
 	h2 {
 		color: #fff;
-		margin-top: 2rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-		padding-bottom: 0.5rem;
+		margin-top: 3rem;
+		font-size: 1.5rem;
+		border-bottom: 1px solid var(--card-border);
+		padding-bottom: 0.75rem;
+		margin-bottom: 1.5rem;
 	}
 
 	h3 {
-		color: #c0c0c0;
-		margin-top: 1.5rem;
+		color: #fff;
+		margin-top: 2rem;
+		font-size: 1.2rem;
+		opacity: 0.9;
 	}
 
 	p {
-		color: #e6edf3;
-		margin-bottom: 1rem;
+		color: #8b949e;
+		margin-bottom: 1.25rem;
+	}
+
+	strong {
+		color: #fff;
 	}
 
 	a {
 		color: rgb(var(--accent-light));
 		text-decoration: none;
+		border-bottom: 1px dashed rgba(var(--accent-light), 0.3);
+		transition: all 0.2s;
 	}
 
 	a:hover {
-		text-decoration: underline;
+		color: #fff;
+		border-bottom-color: #fff;
 	}
 
 	.back-link {
-		margin-top: 3rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		padding-top: 1.5rem;
+		margin-top: 4rem;
+		border-top: 1px solid var(--card-border);
+		padding-top: 2rem;
+	}
+
+	.back-link a {
+		border: none;
+		font-weight: 600;
+	}
+
+	@media (max-width: 768px) {
+		.privacy-container {
+			padding: 2rem;
+		}
+		h1 {
+			font-size: 2.2rem;
+		}
 	}
 </style>

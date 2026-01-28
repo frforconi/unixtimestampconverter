@@ -1,9 +1,13 @@
 <template>
-  <div class="island-card">
+  <div class="island-card" :class="{ 'editing-mode': editing }">
     <div class="header-row">
-      <div class="title-group">
-        <h2>World Clock <span v-if="editing" class="edit-badge">EDITING</span></h2>
-        <!-- <span v-if="!isRealtime" class="info-text-inline">Fixed to DateConverter</span> -->
+      <div class="title-with-badge">
+        <h2>World Clock</h2>
+        <span v-if="isRealtime" class="mode-badge">Live</span>
+        <span v-if="!isRealtime" class="mode-badge">
+          <!-- <span>{{ `Ref: ${referenceStore}.`}}</span><br> -->
+          <span>{{ `To change edit World Clock Section` }}</span>
+        </span>
       </div>
       <div class="controls-group">
         <div class="toggle-group">
@@ -11,20 +15,21 @@
             :class="{ active: isRealtime }" 
             @click="setMode(true)"
             class="toggle-btn"
-          >Realtime</button>
+          >Live</button>
           <button 
             :class="{ active: !isRealtime }" 
             @click="setMode(false)"
             class="toggle-btn"
-          >Date Converter</button>
+          >Static</button>
         </div>
         <button 
-          class="icon-btn" 
-          :class="{ 'done-btn': editing }"
+          class="icon-btn edit-toggle" 
           @click="toggleEdit" 
-          title="Edit Zones"
+          :class="{ active: editing }"
+          :title="editing ? 'Save Changes' : 'Edit Clocks'"
         >
-          {{ editing ? 'Done' : '⚙️' }}
+          <svg v-if="!editing" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
         </button>
       </div>
     </div>
@@ -32,35 +37,46 @@
     <div class="zones-grid">
       <template v-if="isMounted">
         <!-- Pinned Local Zone -->
-        <div class="zone-item local-zone">
-          <div class="zone-header">
-              <div class="zone-name">{{ localZone.label }} (Local)</div>
+        <div class="zone-card local">
+          <div class="zone-label">
+            <span class="city">{{ localZone.label }}</span>
+            <span class="tag">Local</span>
           </div>
-          <div class="zone-time">{{ localZone.time }}</div>
-          <div class="zone-day">{{ localZone.day }}</div>
+          <div class="zone-time mono">{{ localZone.time }}</div>
+          <div class="zone-date">{{ localZone.day }}</div>
         </div>
 
         <!-- Configurable Zones -->
-        <div v-for="(zone, index) in displayZonesComputed" :key="zone.id" class="zone-item" :class="{ 'editing': editing }">
-          <div class="zone-header">
-              <div class="zone-name">{{ zone.label }}</div>
-              <div v-if="editing" class="zone-actions">
-                  <button @click="moveZone(index, -1)" :disabled="index === 0">←</button>
-                  <button @click="removeZone(index)" class="delete-btn">×</button>
-                  <button @click="moveZone(index, 1)" :disabled="index === displayZones.length - 1">→</button>
-              </div>
+        <div v-for="(zone, index) in displayZonesComputed" :key="zone.id" class="zone-card" :class="{ 'editing': editing }">
+          <div class="zone-label">
+            <span class="city">{{ zone.label }}</span>
+            <div v-if="editing" class="zone-actions">
+              <button @click="moveZone(index, -1)" :disabled="index === 0" class="action-btn" title="Move Up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button @click="removeZone(index)" class="action-btn delete" title="Remove Clock">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <button @click="moveZone(index, 1)" :disabled="index === rawZones.length - 1" class="action-btn" title="Move Down">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
           </div>
-          <div class="zone-time">{{ zone.time }}</div>
-          <div class="zone-day">{{ zone.day }}</div>
+          <div class="zone-time mono">{{ zone.time }}</div>
+          <div class="zone-date">{{ zone.day }}</div>
         </div>
         
-        <!-- Add Zone Card (only in edit mode) -->
-        <div v-if="editing" class="zone-item add-zone">
-          <select v-model="newZoneName" class="zone-select">
-              <option value="" disabled selected>Select Timezone</option>
+        <!-- Add Zone Card -->
+        <div v-if="editing" class="zone-card add-new">
+          <div class="add-form">
+            <select v-model="newZoneName" class="zone-select mono">
+              <option value="" disabled selected>Add Timezone...</option>
               <option v-for="tz in availableTimezones" :key="tz" :value="tz">{{ tz }}</option>
-          </select>
-          <button @click="addZone" :disabled="!newZoneName" class="add-btn">Add Clock</button>
+            </select>
+            <button @click="addZone" :disabled="!newZoneName" class="add-btn">
+              Add
+            </button>
+          </div>
         </div>
       </template>
     </div>
@@ -145,7 +161,7 @@ const localZone = computed(() => {
 
 
 // -- Core Logic --
-const displayZones = () => rawZones.value.map(z => {
+const getDisplayZones = () => rawZones.value.map(z => {
   const now = isRealtime.value 
     ? new Date(realtimeStore.value * 1000) 
     : new Date(referenceStore.value * 1000);
@@ -201,21 +217,14 @@ const saveZones = () => {
 
 const loadZones = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    const localTz = getLocalTimezone();
-    
     if (stored) {
         try {
             let parsed = JSON.parse(stored);
-            // Cleanup: remove any legacy "Local" entries to avoid duplication with the new pinned card
-            // We identify legacy local entries by their name matching the local timezone OR explicitly labeled "Local"
-            // Actually, best to just filter out if ID matches or label matches what we generated before. 
-            // Simple heuristic: If it has "Local" in the label, filter it out for this migration
             rawZones.value = parsed.filter(z => !z.label.includes('Local'));
         } catch (e) {
             console.error('Failed to parse stored zones', e);
         }
     } else {
-        // Defaults - No Local here, as it's pinned now
         rawZones.value = [
             { id: 'default-utc', name: 'UTC', label: 'UTC' },
             { id: 'default-ny', name: 'America/New_York', label: 'New York' },
@@ -228,26 +237,23 @@ const loadZones = () => {
 const realtimeStore = useStore(realtimeTimestamp);
 const referenceStore = useStore(referenceTimestamp);
 
-// Override displayZones to depend on stores
 const displayZonesComputed = computed(() => {
-    if (isRealtime.value) {
-        const _ = realtimeStore.value; // reactive dependency
-    } else {
-        const _ = referenceStore.value; // reactive dependency
-    }
-    return displayZones();
+    // Reactive dependencies
+    const _rt = realtimeStore.value;
+    const _ref = referenceStore.value;
+    const _mode = isRealtime.value;
+    
+    return getDisplayZones();
 });
 
 onMounted(() => {
     isMounted.value = true;
     
-    // Load saved mode
     const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
     if (savedMode !== null) {
         isRealtime.value = JSON.parse(savedMode);
     }
 
-    // Load Timezones list
     if (Intl && Intl.supportedValuesOf) {
         availableTimezones.value = Intl.supportedValuesOf('timeZone');
     } else {
@@ -255,87 +261,73 @@ onMounted(() => {
     }
 
     loadZones();
-    
-    // Sync reference is handled by store now
-});
-
-onUnmounted(() => {
 });
 </script>
 
 <style scoped>
 .island-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--card-border);
+  transition: all 0.3s ease;
+}
+
+.island-card.editing-mode {
+  border-color: rgba(var(--accent), 0.3);
+  box-shadow: 0 0 20px rgba(var(--accent), 0.1);
 }
 
 .header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.title-group {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    min-width: 0;
-}
-
-.info-text-inline {
-    font-size: 0.7rem;
-    color: #7c4dff;
-    background: rgba(124, 77, 255, 0.1);
-    padding: 2px 8px;
-    border-radius: 4px;
-    border: 1px solid rgba(124, 77, 255, 0.2);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.controls-group {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+.title-with-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 h2 {
   font-size: 1.1rem;
-  color: #c0c0c0;
+  color: #fff;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-weight: 600;
 }
 
-.edit-badge {
-    background: #FF9800;
-    color: black;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: bold;
+.mode-badge {
+  font-size: 0.7rem;
+  color: #8b949e;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.controls-group {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
 }
 
 .toggle-group {
   display: flex;
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  padding: 2px;
+  border-radius: 8px;
+  padding: 3px;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .toggle-btn {
   background: transparent;
   border: none;
-  color: #888;
+  color: #8b949e;
   padding: 4px 12px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.75rem;
   transition: all 0.2s;
@@ -344,152 +336,163 @@ h2 {
 .toggle-btn.active {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  font-weight: 500;
 }
 
 .icon-btn {
     background: transparent;
-    border: none;
-    font-size: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8b949e;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
     cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
 }
+
 .icon-btn:hover {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
 }
 
-.done-btn {
-    background: #3d7d1f !important;
-    color: #000 !important;
-    font-size: 0.8rem !important;
-    font-weight: bold;
-    padding: 4px 12px !important;
-    border-radius: 6px !important;
-    opacity: 1 !important;
-    border: 1px solid rgba(0,0,0,0.2) !important;
-    text-transform: uppercase;
-    transition: all 0.2s ease;
-}
-
-.done-btn:hover {
-    background: #61c930 !important;
-    transform: scale(1.05);
+.icon-btn.active {
+    background: rgba(var(--accent), 0.2);
+    border-color: rgba(var(--accent), 0.5);
+    color: #fff;
 }
 
 .zones-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 1rem;
 }
 
-.zone-item {
+.zone-card {
   background: rgba(0,0,0,0.2);
-  padding: 0.8rem;
-  border-radius: 8px;
-  text-align: center;
-  position: relative;
-  border: 1px solid transparent;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
 }
 
-.zone-item.local-zone {
-  background: rgba(124, 77, 255, 0.15); /* Slightly highlighted */
-  border: 1px solid rgba(124, 77, 255, 0.3);
+.zone-card.local {
+  background: rgba(var(--accent), 0.05);
+  border-color: rgba(var(--accent), 0.2);
 }
 
-.zone-item.editing {
-    border-color: rgba(255, 152, 0, 0.5);
+.zone-card.editing {
+    border-color: rgba(255, 255, 255, 0.1);
     background: rgba(0,0,0,0.4);
 }
 
-.zone-header {
+.zone-label {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: 0.3rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.city {
+    font-size: 0.8rem;
+    color: #8b949e;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag {
+    font-size: 0.6rem;
+    background: rgba(var(--accent), 0.2);
+    color: rgb(var(--accent-light));
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.zone-time {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0.25rem 0;
+}
+
+.zone-date {
+  font-size: 0.7rem;
+  color: #555;
 }
 
 .zone-actions {
     display: flex;
-    gap: 4px;
-    margin-top: 4px;
+    gap: 2px;
 }
 
-.zone-actions button {
-    background: rgba(255, 255, 255, 0.1);
+.action-btn {
+    background: rgba(255, 255, 255, 0.05);
     border: none;
-    color: #ccc;
+    color: #555;
     cursor: pointer;
     border-radius: 4px;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    transition: all 0.2s;
 }
 
-.zone-actions button:hover:not(:disabled) {
-    background: rgba(255, 255, 255, 0.2);
+.action-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
 }
 
-.delete-btn {
-    color: #ff6b6b !important;
+.action-btn.delete:hover {
+    color: #ff6b6b;
 }
 
-.zone-name {
-  font-size: 0.85rem;
-  color: #888;
+.add-new {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.local-zone .zone-name {
-  color: #ccc;
-  font-weight: 500;
-}
-
-.zone-time {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #fff;
-  margin: 0.2rem 0;
-}
-
-.zone-day {
-  font-size: 0.75rem;
-  color: #aaa;
-}
-
-.add-zone {
+.add-form {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
+    width: 100%;
 }
 
 .zone-select {
     width: 100%;
-    background: #222;
+    background: rgba(0, 0, 0, 0.3);
     color: #fff;
-    border: 1px solid #444;
-    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
     padding: 4px;
+    font-size: 0.75rem;
+    outline: none;
 }
 
 .add-btn {
-    background: #4caf50;
+    background: rgba(var(--accent), 0.5);
     color: white;
     border: none;
-    padding: 6px;
-    border-radius: 4px;
+    padding: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .add-btn:disabled {
-    background: #333;
-    color: #666;
+    opacity: 0.3;
     cursor: not-allowed;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', monospace;
 }
 </style>

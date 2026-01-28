@@ -5,13 +5,17 @@ import DateConverter from "../components/DateConverter.vue";
 import WorldClock from "../components/WorldClock.vue";
 ---
 
-<Layout title="Unix Timestamp Converter | Real-time Tools">
+<Layout 
+	title="Unix Timestamp Converter | Real-time Epoch Converter"
+	description="The ultimate real-time Unix Timestamp converter. Convert seconds to human-readable dates and explore world clocks. Fast, modern, and developer-friendly."
+>
 	<header class="hero">
-		<!-- <img src="/logo.png" alt="Unix Time Converter Logo" class="site-logo" /> -->
-		<h1>Unix <span class="text-gradient">Time</span> Converter</h1>
-		<p class="subtitle">
-			Real-time tools for developers and time travelers.
-		</p>
+		<div class="hero-content">
+			<h1>Unix <span class="text-gradient">Time</span> Converter</h1>
+			<p class="subtitle">
+				Precision tools for developers, systems engineers, and time travelers.
+			</p>
+		</div>
 	</header>
 
 	<div class="islands-container">
@@ -25,6 +29,33 @@ import WorldClock from "../components/WorldClock.vue";
 			<DateConverter client:visible />
 			<WorldClock client:visible />
 		</section>
+
+		<!-- SEO & Info Section -->
+		<section class="info-section">
+			<div class="info-card">
+				<h2>What is Unix Time?</h2>
+				<p>
+					Unix time (also known as Epoch time, POSIX time, or Unix timestamp) is a system for describing a point in time. It is the number of seconds that have elapsed since the <strong>Unix Epoch</strong>, minus leap seconds.
+				</p>
+				<p>
+					The <strong>Unix Epoch</strong> is 00:00:00 UTC on 1 January 1970.
+				</p>
+				<div class="info-grid">
+					<div class="info-item">
+						<h3>Universal</h3>
+						<p>Used across Unix-like operating systems and many file formats.</p>
+					</div>
+					<div class="info-item">
+						<h3>Lightweight</h3>
+						<p>Represented as a single integer, making it easy for computers to process.</p>
+					</div>
+					<div class="info-item">
+						<h3>Timezone Independent</h3>
+						<p>Always based on UTC, avoiding complexities of local time zones.</p>
+					</div>
+				</div>
+			</div>
+		</section>
 	</div>
 </Layout>
 
@@ -32,24 +63,17 @@ import WorldClock from "../components/WorldClock.vue";
 	.hero {
 		text-align: center;
 		margin-bottom: 4rem;
-		margin-top: 2rem;
+		margin-top: 3rem;
+		position: relative;
 	}
 
-	/* .site-logo {
-		width: 120px;
-		height: auto;
-		margin-bottom: 1.5rem;
-		border-radius: 20%;
-		box-shadow: 0 0 30px rgba(124, 77, 255, 0.3);
-		transition: transform 0.3s ease;
+	.hero-content {
+		position: relative;
+		z-index: 1;
 	}
-
-	.site-logo:hover {
-		transform: scale(1.05) rotate(2deg);
-	} */
 
 	h1 {
-		font-size: 3.5rem;
+		font-size: clamp(2.5rem, 8vw, 4.5rem);
 		font-weight: 800;
 		margin: 0;
 		letter-spacing: -0.05rem;
@@ -69,48 +93,86 @@ import WorldClock from "../components/WorldClock.vue";
 	}
 
 	.subtitle {
-		font-size: 1.2rem;
+		font-size: clamp(1rem, 3vw, 1.4rem);
 		color: #8b949e;
-		margin-top: 1rem;
+		margin-top: 1.5rem;
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.islands-container {
 		display: flex;
 		flex-direction: column;
-		gap: 2rem;
+		gap: 3rem;
 		align-items: stretch;
-		max-width: 90%;
+		max-width: 1000px;
 		margin: auto;
 	}
 
 	.island-main {
 		width: 100%;
+		/* position: sticky; */
+		/* top: 1rem; */
+		/* z-index: 10; */
+		/* transition: top 0.3s ease; */
 	}
 
 	.island-secondary {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: 1fr;
 		gap: 2rem;
 	}
 
-	@media (min-width: 768px) {
-		.islands-container {
-			display: flex;
-			flex-direction: column;
-			gap: 2rem;
-			align-items: stretch;
-			max-width: 900px;
-			margin: auto;
-		}
-		.island-main {
-			width: 100%;
-		}
+	@media (min-width: 850px) {
 		.island-secondary {
-			display: flex;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: space-between;
-			gap: 2rem;
+			grid-template-columns: 1fr 1fr;
 		}
+	}
+
+	.info-section {
+		margin-top: 2rem;
+	}
+
+	.info-card {
+		background: var(--card-bg);
+		border: 1px solid var(--card-border);
+		border-radius: 24px;
+		padding: 3rem;
+		backdrop-filter: blur(10px);
+	}
+
+	.info-card h2 {
+		font-size: 2rem;
+		margin-top: 0;
+		margin-bottom: 1.5rem;
+		background: linear-gradient(to right, #fff, #8b949e);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.info-card p {
+		color: #8b949e;
+		font-size: 1.1rem;
+		line-height: 1.7;
+		margin-bottom: 1.5rem;
+	}
+
+	.info-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 2rem;
+		margin-top: 3rem;
+	}
+
+	.info-item h3 {
+		color: #fff;
+		font-size: 1.2rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.info-item p {
+		font-size: 0.95rem;
+		margin: 0;
 	}
 </style>
