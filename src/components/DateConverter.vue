@@ -95,9 +95,11 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
+import { useStore } from '@nanostores/vue';
 import { referenceTimestamp } from '../stores/timeStore';
 
 // -- State --
+const $referenceTimestamp = useStore(referenceTimestamp);
 const isUtc = ref(false);
 const selectedTimezone = ref('UTC');
 const STORAGE_KEY_UTC = 'unix-converter:date-converter-utc';
@@ -162,6 +164,14 @@ onMounted(() => {
   
   updateInputs();
   referenceTimestamp.set(timestamp.value);
+});
+
+// Watch for external store changes
+watch(() => $referenceTimestamp.value, (newVal) => {
+  if (newVal !== Number(timestamp.value)) {
+    timestamp.value = newVal;
+    updateInputs();
+  }
 });
 
 const setMode = (utc) => {

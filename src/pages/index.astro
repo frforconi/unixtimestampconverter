@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import LiveTimestamp from "../components/LiveTimestamp.vue";
 import DateConverter from "../components/DateConverter.vue";
 import WorldClock from "../components/WorldClock.vue";
+import DelphiTimestamp from "../components/DelphiTimestamp.vue";
 ---
 
 <Layout 
@@ -28,6 +29,7 @@ import WorldClock from "../components/WorldClock.vue";
 		<section class="island-secondary">
 			<DateConverter client:visible />
 			<WorldClock client:visible />
+			<DelphiTimestamp client:visible />
 		</section>
 
 		<!-- SEO & Info Section -->
