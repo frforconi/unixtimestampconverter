@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://unixtimestampconverterepoch.netlify.app/sitemap-index.xml
+Sitemap: https://unixtimestampconverterepoch.com/sitemap.xml
