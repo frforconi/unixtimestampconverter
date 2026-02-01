@@ -1,0 +1,106 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <!-- Neon Glow Filter -->
+    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Code Editor Gradient (Left) -->
+    <linearGradient id="editorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Unix Sphere Gradient (Right) -->
+    <radialGradient id="sphereGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#7e22ce" stop-opacity="0.3"/>
+    </radialGradient>
+
+    <!-- Bridge Gradient -->
+    <linearGradient id="bridgeGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="800" fill="url(#bgGrad)"/>
+  
+  <!-- Grid Pattern Overlay -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-opacity="0.03" stroke-width="1"/>
+  </pattern>
+  <rect width="800" height="800" fill="url(#grid)"/>
+
+  <!-- Left Side: Legacy/Code (Delphi) -->
+  <g transform="translate(100, 200)">
+    <!-- Window Frame -->
+    <rect x="0" y="0" width="280" height="360" rx="12" fill="url(#editorGrad)" stroke="#3b82f6" stroke-width="2" stroke-opacity="0.5"/>
+    <!-- Window Header -->
+    <rect x="0" y="0" width="280" height="40" rx="12" fill="#3b82f6" fill-opacity="0.2"/>
+    <circle cx="20" cy="20" r="6" fill="#ef4444"/>
+    <circle cx="40" cy="20" r="6" fill="#f59e0b"/>
+    <circle cx="60" cy="20" r="6" fill="#22c55e"/>
+    
+    <!-- Code Lines -->
+    <g transform="translate(20, 60)" filter="url(#neonGlow)">
+      <rect width="100" height="10" rx="2" fill="#60a5fa" fill-opacity="0.8"/>
+      <rect y="25" width="180" height="10" rx="2" fill="#94a3b8" fill-opacity="0.6"/>
+      <rect y="50" width="140" height="10" rx="2" fill="#94a3b8" fill-opacity="0.6"/>
+      <rect y="75" width="200" height="10" rx="2" fill="#94a3b8" fill-opacity="0.6"/>
+      
+      <!-- Highlighted Function -->
+      <rect y="120" width="240" height="60" rx="4" fill="#3b82f6" fill-opacity="0.1" stroke="#3b82f6" stroke-opacity="0.4" stroke-dasharray="4 4"/>
+      <text x="10" y="145" font-family="monospace" font-size="14" fill="#60a5fa">function TDateTime</text>
+      <text x="10" y="165" font-family="monospace" font-size="14" fill="#94a3b8">Double(Unix)</text>
+    </g>
+  </g>
+
+  <!-- Right Side: Future/Unix (Sphere) -->
+  <g transform="translate(500, 380)">
+    <!-- Glow behind sphere -->
+    <circle cx="0" cy="0" r="140" fill="#a855f7" fill-opacity="0.1" filter="url(#neonGlow)"/>
+    
+    <!-- Wireframe Sphere -->
+    <circle cx="0" cy="0" r="100" fill="url(#sphereGrad)" stroke="#d8b4fe" stroke-width="2" stroke-opacity="0.5"/>
+    <ellipse cx="0" cy="0" rx="100" ry="30" fill="none" stroke="#d8b4fe" stroke-width="1" stroke-opacity="0.3" transform="rotate(45)"/>
+    <ellipse cx="0" cy="0" rx="100" ry="30" fill="none" stroke="#d8b4fe" stroke-width="1" stroke-opacity="0.3" transform="rotate(-45)"/>
+    <ellipse cx="0" cy="0" rx="30" ry="100" fill="none" stroke="#d8b4fe" stroke-width="1" stroke-opacity="0.3"/>
+    
+    <!-- Floating Data Points -->
+    <g filter="url(#neonGlow)">
+      <circle cx="-60" cy="-40" r="4" fill="white"/>
+      <circle cx="50" cy="60" r="6" fill="white"/>
+      <circle cx="70" cy="-20" r="3" fill="white"/>
+    </g>
+    
+    <!-- Timestamp Text -->
+    <text x="-60" y="10" font-family="monospace" font-size="24" font-weight="bold" fill="white" filter="url(#neonGlow)">EPOCH</text>
+  </g>
+
+  <!-- The Bridge -->
+  <g filter="url(#neonGlow)">
+    <!-- Connection lines -->
+    <path d="M 380 380 C 420 380, 460 380, 500 380" stroke="url(#bridgeGrad)" stroke-width="4" fill="none"/>
+    <path d="M 380 360 C 420 360, 440 340, 500 320" stroke="url(#bridgeGrad)" stroke-width="2" stroke-opacity="0.6" fill="none" stroke-dasharray="5 5"/>
+    <path d="M 380 400 C 420 400, 440 440, 500 440" stroke="url(#bridgeGrad)" stroke-width="2" stroke-opacity="0.6" fill="none" stroke-dasharray="5 5"/>
+    
+    <!-- Data packets flowing -->
+    <circle cx="440" cy="380" r="6" fill="white">
+      <animate attributeName="cx" values="380;500" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+</svg>

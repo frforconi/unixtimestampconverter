@@ -8,7 +8,7 @@ interface Props {
 
 const { 
 	title, 
-	description = "A fast, modern Unix Timestamp converter and world clock. Convert epoch time to human-readable date and vice-versa in real-time.",
+	description = "A fast, modern Unix Timestamp converter. Convert epoch time to human-readable dates (GMT & Local), view real-time world clocks, and generate timestamps for Delphi, C++, and more.",
 	image = "/logo.png",
 	canonicalURL = Astro.url.href
 } = Astro.props;
@@ -34,6 +34,7 @@ const {
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={new URL(image, Astro.url)} />
+		<meta property="og:site_name" content="Unix Timestamp Converter" />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
@@ -54,7 +55,7 @@ const {
 			}
 		</script>
 
-		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1688192858896088" crossorigin="anonymous"></script>		
+		<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1688192858896088" crossorigin="anonymous"></script>		 -->
 		<meta name="google-adsense-account" content="ca-pub-1688192858896088">
 		
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -74,6 +75,7 @@ const {
 				</div>
 				<nav class="footer-nav">
 					<a href="/">Home</a>
+					<a href="/tools">Tools</a>
 					<a href="/privacy">Privacy Policy</a>
 				</nav>
 			</div>
