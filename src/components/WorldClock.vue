@@ -15,11 +15,13 @@
             :class="{ active: isRealtime }" 
             @click="setMode(true)"
             class="toggle-btn"
+            :disabled="disabled"
           >Live</button>
           <button 
             :class="{ active: !isRealtime }" 
             @click="setMode(false)"
             class="toggle-btn"
+            :disabled="disabled"
           >Static</button>
         </div>
         <button 
@@ -27,6 +29,7 @@
           @click="toggleEdit" 
           :class="{ active: editing }"
           :title="editing ? 'Save Changes' : 'Edit Clocks'"
+          :disabled="disabled"
         >
           <svg v-if="!editing" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
@@ -51,13 +54,13 @@
           <div class="zone-label">
             <span class="city">{{ zone.label }}</span>
             <div v-if="editing" class="zone-actions">
-              <button @click="moveZone(index, -1)" :disabled="index === 0" class="action-btn" title="Move Up">
+              <button @click="moveZone(index, -1)" :disabled="index === 0 || disabled" class="action-btn" title="Move Up">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
               </button>
-              <button @click="removeZone(index)" class="action-btn delete" title="Remove Clock">
+              <button @click="removeZone(index)" class="action-btn delete" title="Remove Clock" :disabled="disabled">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
-              <button @click="moveZone(index, 1)" :disabled="index === rawZones.length - 1" class="action-btn" title="Move Down">
+              <button @click="moveZone(index, 1)" :disabled="index === rawZones.length - 1 || disabled" class="action-btn" title="Move Down">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
@@ -69,11 +72,11 @@
         <!-- Add Zone Card -->
         <div v-if="editing" class="zone-card add-new">
           <div class="add-form">
-            <select v-model="newZoneName" class="zone-select mono">
+            <select v-model="newZoneName" class="zone-select mono" :disabled="disabled">
               <option value="" disabled selected>Add Timezone...</option>
               <option v-for="tz in availableTimezones" :key="tz" :value="tz">{{ tz }}</option>
             </select>
-            <button @click="addZone" :disabled="!newZoneName" class="add-btn">
+            <button @click="addZone" :disabled="!newZoneName || disabled" class="add-btn">
               Add
             </button>
           </div>
@@ -88,8 +91,15 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useStore } from '@nanostores/vue';
 import { realtimeTimestamp, referenceTimestamp } from '../stores/timeStore';
 
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+});
+
 // -- State --
-const isRealtime = ref(true);
+const isRealtime = ref(false);
 const editing = ref(false);
 const newZoneName = ref('');
 const rawZones = ref([]); // Stores { id, name, label }
@@ -217,7 +227,7 @@ const saveZones = () => {
 
 const loadZones = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
+    if (stored && !props.disabled) {
         try {
             let parsed = JSON.parse(stored);
             rawZones.value = parsed.filter(z => !z.label.includes('Local'));
@@ -250,7 +260,7 @@ onMounted(() => {
     isMounted.value = true;
     
     const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
-    if (savedMode !== null) {
+    if (savedMode !== null && !props.disabled) {
         isRealtime.value = JSON.parse(savedMode);
     }
 

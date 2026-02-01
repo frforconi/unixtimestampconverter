@@ -10,11 +10,13 @@
           :class="{ active: !isUtc }" 
           @click="setMode(false)"
           class="toggle-btn"
+          :disabled="disabled"
         >Local</button>
         <button 
           :class="{ active: isUtc }" 
           @click="setMode(true)"
           class="toggle-btn"
+          :disabled="disabled"
         >UTC</button>
       </div>
     </div>
@@ -24,8 +26,8 @@
         <div class="label-row">
           <label for="ts-input">Unix Timestamp (Seconds)</label>
           <div class="action-buttons">
-            <button @click="copyToClipboard(timestamp)" class="mini-copy-btn">Copy</button>
-            <button @click="shareLink" class="mini-copy-btn share-btn">
+            <button @click="copyToClipboard(timestamp)" class="mini-copy-btn" :disabled="disabled">Copy</button>
+            <button @click="shareLink" class="mini-copy-btn share-btn" :disabled="disabled">
               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
               Share Link
             </button>
@@ -38,6 +40,7 @@
             @input="updateInputs"
             id="ts-input"
             class="main-input mono"
+            :disabled="disabled"
           />
         </div>
       </div>
@@ -51,39 +54,39 @@
       <div class="input-group">
         <div class="label-row">
           <label>Human Readable Date</label>
-          <button @click="copyToClipboard(dateString)" class="mini-copy-btn">Copy Date</button>
+          <button @click="copyToClipboard(dateString)" class="mini-copy-btn" :disabled="disabled">Copy Date</button>
         </div>
         <div class="date-inputs-container">
           <div class="date-row">
             <div class="date-field">
-              <input type="number" v-model="year" @input="updateTimestamp" placeholder="YYYY" class="date-part year mono" />
+              <input type="number" v-model="year" @input="updateTimestamp" placeholder="YYYY" class="date-part year mono" :disabled="disabled" />
               <span class="field-label">Year</span>
             </div>
             <span class="sep">-</span>
             <div class="date-field">
-              <input type="number" v-model="month" @input="updateTimestamp" placeholder="MM" class="date-part mono" min="1" max="12" />
+              <input type="number" v-model="month" @input="updateTimestamp" placeholder="MM" class="date-part mono" min="1" max="12" :disabled="disabled" />
               <span class="field-label">Month</span>
             </div>
             <span class="sep">-</span>
             <div class="date-field">
-              <input type="number" v-model="day" @input="updateTimestamp" placeholder="DD" class="date-part mono" min="1" max="31" />
+              <input type="number" v-model="day" @input="updateTimestamp" placeholder="DD" class="date-part mono" min="1" max="31" :disabled="disabled" />
               <span class="field-label">Day</span>
             </div>
           </div>
           
           <div class="date-row time-row">
             <div class="date-field">
-              <input type="number" v-model="hour" @input="updateTimestamp" placeholder="HH" class="date-part mono" min="0" max="23" />
+              <input type="number" v-model="hour" @input="updateTimestamp" placeholder="HH" class="date-part mono" min="0" max="23" :disabled="disabled" />
               <span class="field-label">Hour</span>
             </div>
             <span class="sep">:</span>
             <div class="date-field">
-              <input type="number" v-model="minute" @input="updateTimestamp" placeholder="mm" class="date-part mono" min="0" max="59" />
+              <input type="number" v-model="minute" @input="updateTimestamp" placeholder="mm" class="date-part mono" min="0" max="59" :disabled="disabled" />
               <span class="field-label">Min</span>
             </div>
             <span class="sep">:</span>
             <div class="date-field">
-              <input type="number" v-model="second" @input="updateTimestamp" placeholder="ss" class="date-part mono" min="0" max="59" />
+              <input type="number" v-model="second" @input="updateTimestamp" placeholder="ss" class="date-part mono" min="0" max="59" :disabled="disabled" />
               <span class="field-label">Sec</span>
             </div>
           </div>
@@ -97,6 +100,13 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useStore } from '@nanostores/vue';
 import { referenceTimestamp } from '../stores/timeStore';
+
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+});
 
 // -- State --
 const $referenceTimestamp = useStore(referenceTimestamp);
@@ -141,7 +151,7 @@ const shareLink = async () => {
 onMounted(() => {
   isMounted.value = true;
   const savedUtc = localStorage.getItem(STORAGE_KEY_UTC);
-  if (savedUtc !== null) {
+  if (savedUtc !== null && !props.disabled) {
     isUtc.value = JSON.parse(savedUtc);
   }
 

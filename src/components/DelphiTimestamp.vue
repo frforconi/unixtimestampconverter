@@ -6,7 +6,7 @@
         <span class="timezone-badge">Borland / Delphi / C++ Builder</span>
       </div>
       <div class="action-buttons">
-        <button @click="copyToClipboard(inputValue)" class="mini-copy-btn">Copy</button>
+        <button @click="copyToClipboard(inputValue)" class="mini-copy-btn" :disabled="disabled">Copy</button>
       </div>
     </div>
     
@@ -21,6 +21,7 @@
           type="datetime-local"
           step="1"
           class="base-date-input mono"
+          :disabled="disabled"
         />
       </div>
     </div>
@@ -33,6 +34,7 @@
           class="main-value mono input-field"
           type="number"
           step="0.0000000001"
+          :disabled="disabled"
         />
         <div class="label">Days since {{ baseDate.replace('T', ' ') }}</div>
       </div>
@@ -50,6 +52,13 @@
 import { ref, watch, onMounted, computed } from 'vue';
 import { useStore } from '@nanostores/vue';
 import { referenceTimestamp } from '../stores/timeStore';
+
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
+  }
+});
 
 const $referenceTimestamp = useStore(referenceTimestamp);
 const inputValue = ref(0);
@@ -75,7 +84,7 @@ const updateFromStore = (unixTs) => {
 
 onMounted(() => {
   const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
+  if (stored && !props.disabled) {
     baseDate.value = stored;
   }
   updateFromStore($referenceTimestamp.value);

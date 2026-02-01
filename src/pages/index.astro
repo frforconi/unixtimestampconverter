@@ -79,7 +79,7 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
           </ul>
           <div class="live-demo">
             <span class="demo-label">Interactive Tool</span>
-            <DateConverter client:visible />
+            <DateConverter client:visible disabled class="demo-tool"/>
           </div>
         </div>
         <div class="media">
@@ -121,7 +121,7 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
           </ul>
           <div class="live-demo">
             <span class="demo-label">Global Status</span>
-            <WorldClock client:visible />
+            <WorldClock client:visible disabled class="demo-tool"/>
           </div>
         </div>
         <div class="media">
@@ -166,7 +166,7 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
           </ul>
           <div class="live-demo">
             <span class="demo-label">Legacy Tool</span>
-            <DelphiTimestamp client:visible />
+            <DelphiTimestamp client:visible disabled class="demo-tool"/>
           </div>
         </div>
         <div class="media">
@@ -243,6 +243,10 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
 </script>
 
 <style>
+
+  .demo-tool {
+    pointer-events: none;
+  }
   /* Floating CTA */
   .floating-cta {
     position: fixed;
