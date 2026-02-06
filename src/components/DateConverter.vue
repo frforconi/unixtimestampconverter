@@ -24,7 +24,7 @@
     <div class="input-section">
       <div class="input-group">
         <div class="label-row">
-          <label for="ts-input">Unix Timestamp (Seconds)</label>
+          <label for="ts-input">Unix Timestamp ({{ isMs ? 'Milliseconds' : 'Seconds' }})</label>
           <div class="action-buttons">
             <button @click="copyToClipboard(timestamp)" class="mini-copy-btn" :disabled="disabled">Copy</button>
             <button @click="shareLink" class="mini-copy-btn share-btn" :disabled="disabled">
@@ -55,6 +55,9 @@
         <div class="label-row">
           <label>Human Readable Date</label>
           <button @click="copyToClipboard(dateString)" class="mini-copy-btn" :disabled="disabled">Copy Date</button>
+        </div>
+        <div class="date-preview mono" v-if="isMounted">
+          {{ dateString }} {{ isUtc ? 'UTC' : '' }}
         </div>
         <div class="date-inputs-container">
           <div class="date-row">
@@ -89,6 +92,11 @@
               <input type="number" v-model="second" @input="updateTimestamp" placeholder="ss" class="date-part mono" min="0" max="59" :disabled="disabled" />
               <span class="field-label">Sec</span>
             </div>
+            <span class="sep" v-if="isMs">.</span>
+            <div class="date-field" v-if="isMs">
+              <input type="number" v-model="millisecond" @input="updateTimestamp" placeholder="ms" class="date-part mono" min="0" max="999" :disabled="disabled" />
+              <span class="field-label">MSec</span>
+            </div>
           </div>
         </div>
       </div>
@@ -99,7 +107,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useStore } from '@nanostores/vue';
-import { referenceTimestamp } from '../stores/timeStore';
+import { referenceTimestamp, referenceMs, isMs as isMsStore } from '../stores/timeStore';
 
 const props = defineProps({
   disabled: {
@@ -120,13 +128,17 @@ const day = ref(1);
 const hour = ref(0);
 const minute = ref(0);
 const second = ref(0);
+const millisecond = ref(0);
 
 const timestamp = ref(0);
+const timestampMs = ref(0); // Underlying high-precision value
+const isMs = useStore(isMsStore);
 const isMounted = ref(false);
 
 const dateString = computed(() => {
-  const pad = (n) => n.toString().padStart(2, '0');
-  return `${year.value}-${pad(month.value)}-${pad(day.value)} ${pad(hour.value)}:${pad(minute.value)}:${pad(second.value)}`;
+  const pad = (n, l = 2) => n.toString().padStart(l, '0');
+  const base = `${year.value}-${pad(month.value)}-${pad(day.value)} ${pad(hour.value)}:${pad(minute.value)}:${pad(second.value)}`;
+  return isMs.value ? `${base}.${pad(millisecond.value, 3)}` : base;
 });
 
 const copyToClipboard = async (text) => {
@@ -166,22 +178,50 @@ onMounted(() => {
   const tParam = params.get('t');
   
   if (tParam && !isNaN(Number(tParam))) {
-    timestamp.value = Number(tParam);
+    const rawVal = Number(tParam);
+    if (rawVal > 100000000000) { // Likely milliseconds
+      isMsStore.set(true);
+      timestamp.value = rawVal;
+      timestampMs.value = rawVal;
+    } else {
+      isMsStore.set(false);
+      timestamp.value = rawVal;
+      timestampMs.value = rawVal * 1000;
+    }
   } else {
     const now = new Date();
-    timestamp.value = Math.floor(now.getTime() / 1000);
+    timestampMs.value = now.getTime();
+    timestamp.value = isMs.value ? now.getTime() : Math.floor(now.getTime() / 1000);
   }
   
   updateInputs();
-  referenceTimestamp.set(timestamp.value);
+  referenceTimestamp.set(Math.floor(timestampMs.value / 1000));
+  referenceMs.set(timestampMs.value);
 });
 
 // Watch for external store changes
 watch(() => $referenceTimestamp.value, (newVal) => {
-  if (newVal !== Number(timestamp.value)) {
-    timestamp.value = newVal;
+  const currentTsSecs = Math.floor(timestampMs.value / 1000);
+  if (newVal !== currentTsSecs) {
+    timestampMs.value = newVal * 1000;
+    timestamp.value = isMs.value ? timestampMs.value : newVal;
     updateInputs();
   }
+});
+
+// Watch for milliseconds specifically if we need finer sync
+const $referenceMs = useStore(referenceMs);
+watch(() => $referenceMs.value, (newVal) => {
+  if (newVal !== timestampMs.value) {
+    timestampMs.value = newVal;
+    timestamp.value = isMs.value ? timestampMs.value : Math.floor(newVal / 1000);
+    updateInputs();
+  }
+});
+
+// Watch for isMs changes to update the input field value
+watch(() => isMs.value, (newVal) => {
+  timestamp.value = newVal ? timestampMs.value : Math.floor(timestampMs.value / 1000);
 });
 
 const setMode = (utc) => {
@@ -241,7 +281,8 @@ const updateTimestamp = () => {
       day.value,
       hour.value,
       minute.value,
-      second.value
+      second.value,
+      millisecond.value
     ));
     ts = date.getTime();
   } else {
@@ -254,22 +295,35 @@ const updateTimestamp = () => {
       second.value,
       selectedTimezone.value
     );
+    ts += millisecond.value;
   }
-  timestamp.value = Math.floor(ts / 1000);
-  referenceTimestamp.set(timestamp.value);
+  timestampMs.value = ts;
+  timestamp.value = isMs.value ? ts : Math.floor(ts / 1000);
+  referenceTimestamp.set(Math.floor(ts / 1000));
+  referenceMs.set(ts);
 };
 
 const updateInputs = () => {
-  const ts = Number(timestamp.value);
-  if (!isNaN(ts)) {
+  // If update comes from timestamp input
+  const rawTs = Number(timestamp.value);
+  if (!isNaN(rawTs)) {
+    if (isMs.value) {
+      timestampMs.value = rawTs;
+    } else {
+      timestampMs.value = rawTs * 1000;
+    }
+    
+    const ts = Math.floor(timestampMs.value / 1000);
+    const date = new Date(timestampMs.value);
+    
     if (isUtc.value) {
-      const date = new Date(ts * 1000);
       year.value = date.getUTCFullYear();
       month.value = date.getUTCMonth() + 1;
       day.value = date.getUTCDate();
       hour.value = date.getUTCHours();
       minute.value = date.getUTCMinutes();
       second.value = date.getUTCSeconds();
+      millisecond.value = date.getUTCMilliseconds();
     } else {
       const parts = getPartsFromTimestampInZone(ts, selectedTimezone.value);
       year.value = parts.year;
@@ -278,8 +332,10 @@ const updateInputs = () => {
       hour.value = parts.hour;
       minute.value = parts.minute;
       second.value = parts.second;
+      millisecond.value = date.getMilliseconds();
     }
-    referenceTimestamp.set(timestamp.value);
+    referenceTimestamp.set(ts);
+    referenceMs.set(timestampMs.value);
   }
 };
 </script>
@@ -300,6 +356,7 @@ const updateInputs = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
 }
 
 .title-with-badge {
@@ -422,6 +479,17 @@ h2 {
 
 .main-input:focus {
   border-color: rgba(var(--accent), 0.5);
+}
+
+.date-preview {
+  background: rgba(var(--accent), 0.05);
+  border: 1px solid rgba(var(--accent), 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: rgb(var(--accent-light));
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .arrow-divider {

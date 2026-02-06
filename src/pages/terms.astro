@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+	title="Terms of Service | Usage Conditions for Developer Tools"
+	description="Legal terms and usage policies for the Unix Timestamp Converter website and its various time calculation utilities."
+>
+	<div class="terms-container">
+		<header class="page-header">
+			<h1>Terms of <span class="text-gradient">Service</span></h1>
+			<p class="last-updated">Effective Date: January 28, 2026</p>
+		</header>
+
+		<section class="terms-content">
+			<div class="term-section">
+				<h2>1. Acceptance of Terms</h2>
+				<p>
+					By accessing and using UnixTimestampConverter.com (the "Website"), you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you must not use our tools or services.
+				</p>
+			</div>
+
+			<div class="term-section">
+				<h2>2. Description of Service</h2>
+				<p>
+					We provide various time-related conversion tools, including but not limited to Unix Timestamp conversion, World Clocks, and legacy system compatibility tools. These services are provided "as is" and for informational purposes only.
+				</p>
+			</div>
+
+			<div class="term-section">
+				<h2>3. Use License</h2>
+				<p>
+					Permission is granted to temporarily use the tools on this Website for personal or commercial use. This is the grant of a license, not a transfer of title, and under this license, you may not:
+				</p>
+				<ul>
+					<li>Attempt to decompile or reverse engineer any software contained on the Website.</li>
+					<li>Remove any copyright or other proprietary notations from the materials.</li>
+					<li>Use the site in any way that could damage, disable, or overburden our infrastructure.</li>
+				</ul>
+			</div>
+
+			<div class="term-section">
+				<h2>4. Disclaimer</h2>
+				<p>
+					The materials on this Website are provided on an 'as is' basis. Unix Timestamp Converter makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property.
+				</p>
+			</div>
+
+			<div class="term-section">
+				<h2>5. Accuracy of Materials</h2>
+				<p>
+					While we strive for 100% precision, the materials appearing on the Website could include technical, typographical, or photographic errors. We do not warrant that any of the materials on its website are accurate, complete, or current.
+				</p>
+			</div>
+
+			<div class="term-section">
+				<h2>6. Governing Law</h2>
+				<p>
+					These terms and conditions are governed by and construed in accordance with international digital service standards and you irrevocably submit to the exclusive jurisdiction of the courts in that State or location.
+				</p>
+			</div>
+		</section>
+
+		<div class="back-link">
+			<a href="/">&larr; Back to Home</a>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.terms-container {
+		max-width: 850px;
+		margin: 2rem auto;
+		background: var(--card-bg);
+		backdrop-filter: blur(20px);
+		padding: 4rem;
+		border-radius: 32px;
+		border: 1px solid var(--card-border);
+		line-height: 1.8;
+		box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+	}
+
+	.page-header {
+		margin-bottom: 4rem;
+		border-bottom: 1px solid var(--card-border);
+		padding-bottom: 2rem;
+	}
+
+	h1 {
+		font-size: 3rem;
+		font-weight: 800;
+		margin-bottom: 0.5rem;
+		letter-spacing: -0.02em;
+	}
+
+	.text-gradient {
+		background: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.last-updated {
+		color: #8b949e;
+		font-size: 0.95rem;
+	}
+
+	.term-section {
+		margin-bottom: 3rem;
+	}
+
+	h2 {
+		color: #fff;
+		font-size: 1.5rem;
+		margin-bottom: 1rem;
+		letter-spacing: -0.01em;
+	}
+
+	p {
+		color: #8b949e;
+		margin-bottom: 1.25rem;
+	}
+
+	ul {
+		color: #8b949e;
+		padding-left: 1.5rem;
+		margin-bottom: 1.5rem;
+	}
+
+	li {
+		margin-bottom: 0.5rem;
+	}
+
+	.back-link {
+		margin-top: 4rem;
+		border-top: 1px solid var(--card-border);
+		padding-top: 2rem;
+	}
+
+	.back-link a {
+		color: #8b949e;
+		text-decoration: none;
+		font-weight: 600;
+		transition: color 0.2s;
+	}
+
+	.back-link a:hover {
+		color: #fff;
+	}
+
+	@media (max-width: 768px) {
+		.terms-container {
+			padding: 2rem;
+		}
+		h1 {
+			font-size: 2.2rem;
+		}
+	}
+</style>

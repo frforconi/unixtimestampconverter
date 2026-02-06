@@ -1,0 +1,225 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+	title="About Us | The Mission Behind Unix Timestamp Converter"
+	description="Discover why we build precision developer tools. Learn about our privacy-first approach and our commitment to accurate Unix time tracking."
+>
+	<div class="content-container">
+		<header class="page-header">
+			<div class="badge">Our Mission</div>
+			<h1>About <span class="text-gradient">Our Mission</span></h1>
+		</header>
+
+		<section class="prose">
+			<p>
+				In the world of modern software engineering, time is more than just a sequence of events—it's the heartbeat of distributed systems, the anchor of data integrity, and the language of global synchronization.
+			</p>
+			
+			<div class="highlight-box">
+				<h3>The Problem</h3>
+				<p>
+					Developers often struggle with clunky, ad-filled, or imprecise time conversion tools that break their flow and risk data errors.
+				</p>
+			</div>
+
+			<h2>Precision at Scale</h2>
+			<p>
+				The <strong>Unix Timestamp Converter</strong> was born out of a simple need: a fast, beautiful, and developer-first utility for handling POSIX time. We believe that even the simplest tools should feel premium and function with absolute reliability.
+			</p>
+
+			<div class="stats-grid">
+				<div class="stat-item">
+					<span class="stat-value">Real-time</span>
+					<span class="stat-label">Synchronization</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-value">Zero</span>
+					<span class="stat-label">Data Collection</span>
+				</div>
+				<div class="stat-item">
+					<span class="stat-value">100%</span>
+					<span class="stat-label">Free Forever</span>
+				</div>
+			</div>
+
+			<h2>Who We Are</h2>
+			<p>
+				We are a small team of passionate developers dedicated to building the "missing utilities" of the web. Our tools are designed to be lightweight, privacy-focused, and aesthetically pleasing, ensuring they complement your professional workflow rather than distracting from it.
+			</p>
+
+			<div class="cta-section">
+				<p>Want to see what else we're building?</p>
+				<a href="/tools" class="outline-button">Explore All Tools</a>
+			</div>
+		</section>
+
+		<div class="back-link">
+			<a href="/">&larr; Back to Home</a>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.content-container {
+		max-width: 900px;
+		margin: 2rem auto;
+		background: var(--card-bg);
+		backdrop-filter: blur(20px);
+		padding: 4rem;
+		border-radius: 32px;
+		border: 1px solid var(--card-border);
+		box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+	}
+
+	.page-header {
+		text-align: center;
+		margin-bottom: 4rem;
+	}
+
+	.badge {
+		display: inline-block;
+		background: rgba(var(--accent-light), 0.1);
+		color: rgb(var(--accent-light));
+		padding: 0.5rem 1.2rem;
+		border-radius: 100px;
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin-bottom: 1rem;
+		border: 1px solid rgba(var(--accent-light), 0.2);
+	}
+
+	h1 {
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-weight: 900;
+		margin: 0;
+		line-height: 1.1;
+		letter-spacing: -0.03em;
+	}
+
+	.text-gradient {
+		background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-light)));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.prose {
+		color: #8b949e;
+		font-size: 1.2rem;
+		line-height: 1.8;
+	}
+
+	h2 {
+		color: #fff;
+		margin-top: 4rem;
+		font-size: 2rem;
+		letter-spacing: -0.02em;
+	}
+
+	h3 {
+		margin: 0 0 1rem 0;
+		color: rgb(var(--accent-light));
+		font-size: 1.3rem;
+	}
+
+	p {
+		margin-bottom: 2rem;
+	}
+
+	.highlight-box {
+		background: rgba(var(--accent), 0.1);
+		border-left: 4px solid rgb(var(--accent));
+		padding: 2rem;
+		border-radius: 0 16px 16px 0;
+		margin: 3rem 0;
+	}
+
+	.highlight-box p {
+		margin-bottom: 0;
+		color: #c9d1d9;
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+		margin: 4rem 0;
+		text-align: center;
+	}
+
+	.stat-item {
+		background: rgba(255, 255, 255, 0.03);
+		padding: 2rem;
+		border-radius: 20px;
+		border: 1px solid var(--card-border);
+	}
+
+	.stat-value {
+		display: block;
+		font-size: 1.8rem;
+		font-weight: 800;
+		color: #fff;
+		margin-bottom: 0.5rem;
+	}
+
+	.stat-label {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: #8b949e;
+	}
+
+	.cta-section {
+		margin-top: 5rem;
+		text-align: center;
+		padding-top: 3rem;
+		border-top: 1px solid var(--card-border);
+	}
+
+	.outline-button {
+		display: inline-block;
+		padding: 0.8rem 2rem;
+		border: 1px solid rgb(var(--accent-light));
+		color: rgb(var(--accent-light));
+		text-decoration: none;
+		border-radius: 100px;
+		font-weight: 600;
+		transition: all 0.3s ease;
+	}
+
+	.outline-button:hover {
+		background: rgb(var(--accent-light));
+		color: rgb(var(--accent-dark));
+		transform: translateY(-2px);
+	}
+
+	.back-link {
+		margin-top: 4rem;
+		border-top: 1px solid var(--card-border);
+		padding-top: 2rem;
+	}
+
+	.back-link a {
+		color: #8b949e;
+		text-decoration: none;
+		font-weight: 600;
+		transition: color 0.2s;
+	}
+
+	.back-link a:hover {
+		color: #fff;
+	}
+
+	@media (max-width: 768px) {
+		.content-container {
+			padding: 2rem;
+		}
+		.stats-grid {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+	}
+</style>

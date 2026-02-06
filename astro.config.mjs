@@ -6,6 +6,6 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://unixtimestampconverterepoch.netlify.app/",
+  site: "https://unixtimestampconverterepoch.com/",
   integrations: [vue(), sitemap()]
 });

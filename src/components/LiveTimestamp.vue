@@ -1,40 +1,77 @@
 <template>
   <div class="island-card hero-card">
     <div class="card-header">
-      <h2>Current Unix Timestamp</h2>
+      <div class="title-with-toggle">
+        <h2>Current Unix Timestamp</h2>
+        <div class="format-toggle">
+          <button @click="toggleMs(false)" :class="{ active: !isMs }">s</button>
+          <button @click="toggleMs(true)" :class="{ active: isMs }">ms</button>
+        </div>
+      </div>
       <button @click="copyTimestamp" class="copy-btn" :class="{ copied }">
         <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         {{ copied ? 'Copied!' : 'Copy' }}
       </button>
     </div>
-    <div class="time-display mono">{{ isMounted ? seconds : '----------' }}</div>
+    <div class="time-display mono">{{ isMounted ? (isMs ? ms : seconds) : '----------' }}</div>
+    <div v-if="isMounted" class="readable-date mono">
+      {{ formattedDate }}
+    </div>
     <div class="footer-info">
       <span class="pulse-icon"></span>
-      <span class="label">Seconds since Jan 1, 1970 (UTC)</span>
+      <span class="label">{{ isMs ? 'Milliseconds' : 'Seconds' }} since Jan 1, 1970 (UTC)</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { realtimeTimestamp } from '../stores/timeStore';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { useStore } from '@nanostores/vue';
+import { realtimeTimestamp, realtimeMs, isMs as isMsStore } from '../stores/timeStore';
 
 const seconds = ref(0);
+const ms = ref(0);
+const isMs = useStore(isMsStore);
 const isMounted = ref(false);
 const copied = ref(false);
+const STORAGE_KEY_MS = 'unix-converter:is-ms';
 let intervalId;
 let timeoutId;
 
-const updateTime = () => {
-  const now = Math.floor(Date.now() / 1000);
-  seconds.value = now;
-  realtimeTimestamp.set(now);
+const toggleMs = (val) => {
+  isMsStore.set(val);
+  localStorage.setItem(STORAGE_KEY_MS, JSON.stringify(val));
 };
+
+const updateTime = () => {
+  const now = Date.now();
+  ms.value = now;
+  seconds.value = Math.floor(now / 1000);
+  realtimeTimestamp.set(seconds.value);
+  realtimeMs.set(ms.value);
+};
+
+const formattedDate = computed(() => {
+  const d = new Date(ms.value);
+  const pad = (n, l = 2) => n.toString().padStart(l, '0');
+  
+  const y = d.getUTCFullYear();
+  const m = pad(d.getUTCMonth() + 1);
+  const day = pad(d.getUTCDate());
+  const h = pad(d.getUTCHours());
+  const min = pad(d.getUTCMinutes());
+  const s = pad(d.getUTCSeconds());
+  const msec = pad(d.getUTCMilliseconds(), 3);
+
+  let base = `${y}-${m}-${day} ${h}:${min}:${s}`;
+  return isMs.value ? `${base}.${msec} UTC` : `${base} UTC`;
+});
 
 const copyTimestamp = async () => {
   try {
-    await navigator.clipboard.writeText(seconds.value.toString());
+    const val = isMs.value ? ms.value : seconds.value;
+    await navigator.clipboard.writeText(val.toString());
     copied.value = true;
     setTimeout(() => {
       copied.value = false;
@@ -46,12 +83,12 @@ const copyTimestamp = async () => {
 
 onMounted(() => {
   isMounted.value = true;
+  const savedMs = localStorage.getItem(STORAGE_KEY_MS);
+  if (savedMs !== null) {
+    isMsStore.set(JSON.parse(savedMs));
+  }
   updateTime();
-  const msToNextSecond = 1000 - (Date.now() % 1000);
-  timeoutId = setTimeout(() => {
-    updateTime();
-    intervalId = setInterval(updateTime, 1000);
-  }, msToNextSecond);
+  intervalId = setInterval(updateTime, 50); // Faster update for milliseconds
 });
 
 onUnmounted(() => {
@@ -87,11 +124,44 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.title-with-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.format-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.format-toggle button {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.format-toggle button.active {
+  background: rgba(var(--accent), 0.3);
+  color: #fff;
 }
 
 h2 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #8b949e;
   margin: 0;
   text-transform: uppercase;
@@ -133,6 +203,17 @@ h2 {
   background: linear-gradient(to bottom, #fff, #a0a0a0);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.readable-date {
+  font-size: 1.1rem;
+  color: #8b949e;
+  margin-bottom: 2rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-info {
