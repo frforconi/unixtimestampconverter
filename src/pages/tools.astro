@@ -35,6 +35,24 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
 
 
 	</div>
+
+	<!-- Reset Settings Section -->
+	<section class="reset-section">
+		<button id="reset-settings" class="btn-reset">
+			<span class="icon">🗑️</span>
+			Reset All Settings
+		</button>
+		<p class="reset-hint">Clears all local preferences and reloads the page.</p>
+	</section>
+
+<script>
+	document.getElementById('reset-settings')?.addEventListener('click', () => {
+		if (confirm('Are you sure you want to reset all settings? This will clear your saved preferences.')) {
+			localStorage.clear();
+			window.location.reload();
+		}
+	});
+</script>
 </Layout>
 
 <style>
@@ -108,5 +126,41 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
 		}
 	}
 
+	.reset-section {
+		margin-top: 4rem;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.btn-reset {
+		background: rgba(255, 107, 107, 0.1);
+		border: 1px solid rgba(255, 107, 107, 0.3);
+		color: #ff6b6b;
+		padding: 0.8rem 1.5rem;
+		border-radius: 8px;
+		cursor: pointer;
+		font-family: inherit;
+		font-size: 0.9rem;
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		transition: all 0.2s ease;
+	}
+
+	.btn-reset:hover {
+		background: rgba(255, 107, 107, 0.2);
+		border-color: rgba(255, 107, 107, 0.5);
+		transform: translateY(-1px);
+	}
+
+	.reset-hint {
+		font-size: 0.8rem;
+		color: #6e7681;
+		margin: 0;
+	}
 	
 </style>

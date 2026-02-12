@@ -49,6 +49,13 @@ import DelphiTimestamp from "../components/DelphiTimestamp.vue";
         Your ultimate POSIX Timestamp utility. Maximize your productivity with 
         specialized conversion and tracking tools for modern developers.
       </p>
+      
+      <div class="hero-actions">
+        <a href="/tools" class="btn-primary">
+          <span class="btn-text">Go to Tools</span>
+          <span class="btn-icon">→</span>
+        </a>
+      </div>
     </header>
 
     <div class="guide-sections">
@@ -353,6 +360,19 @@ time.Unix(ts, 0)</code></pre>
       </div>
     </div>
   </section>
+  
+  <!-- Final Footer CTA -->
+  <section class="final-cta-section reveal">
+    <div class="final-cta-content">
+      <h2>Ready to convert timestamps?</h2>
+      <p>Access our suite of precision tools for developers.</p>
+      <a href="/tools" class="btn-primary btn-large">
+        <span class="btn-text">Open Converter Tools</span>
+        <span class="btn-icon">⚡</span>
+      </a>
+    </div>
+  </section>
+  
   <a href="/tools" class="floating-cta">
     <div class="cta-content">
       <span class="cta-icon">⚡</span>
@@ -487,15 +507,7 @@ time.Unix(ts, 0)</code></pre>
 
   @media (max-width: 640px) {
     .floating-cta {
-      bottom: 11.5rem;
-      right: 1.5rem;
-    }
-    .cta-content {
-      padding: 0.8rem;
-      min-width: 3rem;
-    }
-    .floating-cta:hover .cta-content {
-      padding: 0.8rem 1.2rem;
+      display: none; /* Hide on mobile as requested */
     }
   }
 
@@ -982,5 +994,80 @@ time.Unix(ts, 0)</code></pre>
     .enrichment-content h2 {
       font-size: 2rem;
     }
+  }
+  /* Button Styles */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: linear-gradient(135deg, rgb(var(--accent)), rgb(var(--accent-dark)));
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(var(--accent), 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(var(--accent), 0.4);
+    background: linear-gradient(135deg, rgb(var(--accent-light)), rgb(var(--accent)));
+  }
+
+  .btn-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .btn-primary:hover .btn-icon {
+    transform: translateX(4px);
+  }
+
+  /* Hero CTA */
+  .hero-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Final CTA Section */
+  .final-cta-section {
+    margin-top: 6rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .final-cta-content {
+    background: linear-gradient(180deg, rgba(var(--card-bg), 0.5) 0%, rgba(var(--accent), 0.05) 100%);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 4rem 2rem;
+    backdrop-filter: blur(10px);
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+
+  .final-cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #fff, #aebecf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .final-cta-content p {
+    font-size: 1.2rem;
+    color: #8b949e;
+    margin-bottom: 2.5rem;
+  }
+
+  .btn-large {
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
   }
 </style>
