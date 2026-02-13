@@ -1,0 +1,154 @@
+---
+---
+<button id="bmc-trigger" class="bmc-button" aria-label="Buy Me a Coffee">
+  <div class="bmc-content">
+    <div class="icon-wrapper">
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width="24" 
+        height="24" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        class="coffee-icon"
+      >
+        <path d="M17 8h1a4 4 0 1 1 0 8h-1"></path>
+        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path>
+        <line x1="6" y1="2" x2="6" y2="4"></line>
+        <line x1="10" y1="2" x2="10" y2="4"></line>
+        <line x1="14" y1="2" x2="14" y2="4"></line>
+      </svg>
+    </div>
+    <span class="bmc-text">Buy me a coffee</span>
+  </div>
+</button>
+
+<script>
+  const bmcTrigger = document.getElementById('bmc-trigger');
+  if (bmcTrigger) {
+    bmcTrigger.addEventListener('click', () => {
+      window.open('https://www.buymeacoffee.com/fforconi', '_blank', 'noopener,noreferrer');
+    });
+  }
+</script>
+
+<style>
+  .bmc-button {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .bmc-content {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #FFDD00 0%, #FFBE00 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border-radius: 100px;
+    color: #1a1a1a;
+    font-weight: 700;
+    font-family: 'Inter', system-ui, sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    max-width: 44px; /* Default circle size */
+  }
+
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+  }
+
+  .bmc-text {
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    margin-left: 0;
+  }
+
+  .coffee-icon {
+    width: 22px;
+    height: 22px;
+    animation: steam 1.5s ease-in-out infinite;
+  }
+
+  /* Interaction Styles */
+  .bmc-button:hover {
+    transform: translateY(-4px);
+  }
+
+  .bmc-button:hover .bmc-content {
+    max-width: 200px;
+    padding: 0.8rem 1.4rem;
+    gap: 0.8rem;
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      0 10px 25px rgba(255, 190, 0, 0.3);
+  }
+
+  .bmc-button:hover .bmc-text {
+    opacity: 1;
+    max-width: 150px;
+    margin-left: 0.2rem;
+  }
+
+  .bmc-button:active {
+    transform: translateY(-2px) scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  @keyframes steam {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    33% { transform: translateY(-2px) rotate(-3deg); }
+    66% { transform: translateY(-1px) rotate(3deg); }
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 640px) {
+    .bmc-button {
+      bottom: 2rem;
+      right: 1.5rem;
+    }
+    .bmc-content {
+      padding: 0.8rem;
+    }
+    /* Disable hover expansion on mobile for simplicity */
+    .bmc-button:hover .bmc-content {
+      max-width: 44px;
+      padding: 0.8rem;
+      gap: 0;
+    }
+    .bmc-button:hover .bmc-text {
+      opacity: 0;
+      max-width: 0;
+      margin-left: 0;
+    }
+  }
+</style>
