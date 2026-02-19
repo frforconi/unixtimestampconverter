@@ -10,6 +10,20 @@
       </div>
     </div>
     
+    <div class="display-section">
+      <div class="value-wrapper">
+        <input 
+          v-model="inputValue" 
+          @input="handleInput"
+          class="main-value mono input-field"
+          type="number"
+          step="0.0000000001"
+          :disabled="disabled"
+        />
+        <div class="label">Days since {{ baseDate.replace('T', ' ') }}</div>
+      </div>
+    </div>
+
     <div class="config-section">
       <div class="label-row">
         <label>Base Date (Epoch UTC)</label>
@@ -23,20 +37,6 @@
           class="base-date-input mono"
           :disabled="disabled"
         />
-      </div>
-    </div>
-
-    <div class="display-section">
-      <div class="value-wrapper">
-        <input 
-          v-model="inputValue" 
-          @input="handleInput"
-          class="main-value mono input-field"
-          type="number"
-          step="0.0000000001"
-          :disabled="disabled"
-        />
-        <div class="label">Days since {{ baseDate.replace('T', ' ') }}</div>
       </div>
     </div>
     
