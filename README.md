@@ -100,18 +100,17 @@ Delphi's TDateTime format uses a different time base than Unix:
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Base Guide
 
 ### Finding the current timestamp
 
-The fastest way is to open the main page. The Live Timestamp automatically displays the current Unix timestamp updated in real-time.
+The fastest way is to open the tools page. The Live Timestamp automatically displays the current Unix timestamp updated in real-time.
 
 ### Converting a specific date
 
-1. Go to [https://unix-timestamp.com/tools](/tools)
-2. Use the Date Converter
-3. Enter the date in `YYYY-MM-DD` or `YYYY-MM-DD HH:mm:ss` format
-4. The corresponding timestamp appears immediately
+1. Use the Date Converter
+2. Enter the date in `YYYY-MM-DD` or `YYYY-MM-DD HH:mm:ss` format
+3. The corresponding timestamp appears immediately
 
 ### Copying a timestamp
 
@@ -127,10 +126,10 @@ The site correctly handles timestamps beyond 2038 using 64-bit numbers, ensuring
 # Astro Starter Kit: Minimal
 
 ```sh
-npm create astro@latest -- --template minimal
+git clone
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+> 🧑‍🚀 **Seasoned astronaut?** Delete this guide. Have fun!
 
 ## 🚀 Project Structure
 
