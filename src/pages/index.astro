@@ -320,6 +320,39 @@ time.Unix(ts, 0)</code></pre>
     </div>
   </section>
 
+  <!-- Epoch vs ISO 8601 Section -->
+  <section class="enrichment-section reverse reveal">
+    <div class="enrichment-content">
+      <h2>Unix Epoch vs ISO 8601</h2>
+      <p>
+        While both are standards for representing time, they serve very different 
+        purposes in the developer's ecosystem. Understanding when to use which is 
+        key for building robust systems.
+      </p>
+      
+      <div class="comparison-grid">
+        <div class="comparison-item">
+          <h3>Unix Epoch</h3>
+          <p>A single <strong>integer</strong> representing total elapsed seconds. Ideal for database indexing, fast sorting, and mathematical time calculations.</p>
+          <ul class="mini-list">
+            <li>Machine-friendly</li>
+            <li>Compact storage</li>
+            <li>Always UTC</li>
+          </ul>
+        </div>
+        <div class="comparison-item">
+          <h3>ISO 8601</h3>
+          <p>A <strong>string</strong> format (like <code>2026-05-06T19:37Z</code>). The gold standard for data exchange (JSON APIs) and configuration files.</p>
+          <ul class="mini-list">
+            <li>Human-readable</li>
+            <li>Timezone support</li>
+            <li>Standardized format</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Common Timestamps Reference Table -->
   <section class="enrichment-section reveal">
     <div class="enrichment-content">
@@ -848,6 +881,64 @@ time.Unix(ts, 0)</code></pre>
   /* Enrichment Sections */
   .content-enrichment {
     margin: 6rem 0;
+  }
+
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .comparison-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    padding: 2rem;
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .comparison-item:hover {
+    transform: translateY(-5px);
+    border-color: rgba(var(--accent-light), 0.3);
+  }
+  
+  .comparison-item h3 {
+    color: white;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+  }
+  
+  .mini-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .mini-list li {
+    font-size: 0.9rem;
+    color: #c9d1d9;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .mini-list li::before {
+    content: "→";
+    color: rgb(var(--accent-light));
+  }
+
+  @media (max-width: 768px) {
+    .comparison-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .content-enrichment {
     display: flex;
     flex-direction: column;
     gap: 8rem;
